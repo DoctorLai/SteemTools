@@ -21,6 +21,7 @@ Yes, it is online at: https://chrome.google.com/webstore/detail/steem-tools/emjf
     * Settings
     * Curation Stats
     * Reputation Score Calculator
+    * Alt + S to switch between steemit and busy
     * Log Tab
 
 # Screenshots
