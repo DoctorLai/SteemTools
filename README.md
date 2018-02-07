@@ -28,4 +28,4 @@ Yes, it is online at: https://chrome.google.com/webstore/detail/steem-tools/emjf
 ![](https://github.com/DoctorLai/SteemTools/blob/master/images/delegate.jpg?raw=true)
 
 # License
-[MIT])(https://github.com/DoctorLai/SteemTools/blob/master/LICENSE)
+[MIT](https://github.com/DoctorLai/SteemTools/blob/master/LICENSE)
