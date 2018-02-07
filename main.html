@@ -1,0 +1,126 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8"/>
+    <title>SteemIt Tools</title>
+    <meta name="author" content="@justyy">
+    <script src="js/jquery-3.2.1.min.js"></script>
+    <script src="js/steemtools.js"></script>
+    <script src="js/moment.min.js"></script>
+    <script src="js/Chart.min.js"></script>
+    <script src="js/chartjs-plugin-streaming.js"></script>
+    <script src="js/amcharts.js"></script>
+    <script src="js/pie.js"></script>
+    <script src="js/export.min.js"></script>
+    <script src="js/light.js"></script>
+    <link href="bs/css/bootstrap.min.css" rel="stylesheet" />
+    <script src="bs/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="css/export.css" type="text/css" media="all" />
+    <link rel="stylesheet" href="css/jquery-ui.css" />
+    <script src="js/jquery-ui.js"></script>     
+    <script src="js/steem.min.js"></script>     
+    <style>
+    .ext-window {width: 770px;}
+    textarea {width: 100%;}
+    img {max-width: 100%;}
+    .chart {width: 100%; height: 570px;}
+    .vpbar {width: 100%; background-color: grey;}
+    .vp {color: white;}
+    #delegation-form input {width:100%;max-width:100%;}
+    </style>
+  </head>
+  <body>
+    <div id="tabs" class='ext-window'>
+      <ul>
+        <li><a href="#tabs-general">General</a></li>
+        <li><a id="profile" href="#tabs-profile">Profile</a></li>
+        <li><a href="#tabs-delegate-form">Delegate</a></li>
+        <li><a href="#tabs-setting">Setting</a></li>
+        <li><a href="#tabs-tools">Tools</a></li>
+        <li><a href="#tabs-log">Log</a></li>        
+      </ul>
+      <div id="tabs-general">
+        <h4>Node Server Status</h4>
+        <div id='nodeinfo'> </div>
+        <h4>API Server Status</h4>
+        <div id='serverinfo'> </div>
+        <div id='account_vp_100' class="vpbar"> <div id='account_vp' class="vp"> </div> </div>
+        <div id='account_rep'> </div>        
+        <div id='friends_vp_rep'> </div>
+      </div>   
+      <div id="tabs-profile">
+        <h3 id='profile_id'></h3>
+        <div id='profile_data'> </div>
+      </div>             
+      <div id="tabs-delegate-form">
+        <h3>SteemIt SP Delegation Tool</h3>
+        <form class='form-inline' id='delegation-form'>
+        <fieldset>
+          <legend>
+            <h4>Delegator ID</h4>
+            <input type=text name=delegator id=delegator value='' class='form-control'>
+            <h4>The Delegatee</h4>
+            <input type=text name=delegatee id=delegatee value='' class='form-control'>
+            <h4>Amount</h4>
+            <input type=number name=amount id=amount class='form-control' placeholder="Put zero to undelegate (7 days cooling period)">
+            <select class='form-control' id='unit'>
+              <option value='SP'>SP</option>
+              <option value='VESTS'>VESTS</option>
+            </select>
+            <p><input style='background:green;color:yellow' type=button id=delegate_btn class='form-control' value='Delegate via SteemConnect.com' /></p>
+            <i>Click the button will redirect you to <a href='https://steemconnect.com' rel=nofollow>steemconnect.com</a>. Please enter your keys <B>only on steemconnect.com</B>.</i>
+          </legend>
+        </fieldset>
+        </form>
+      </div>               
+      <div id="tabs-setting">
+        <p><h4>Your SteemId ID: </h4><input type='text' class='form-control' id='steemit_id' name='steemit_id' placeholder="Your Steem ID without @" value=''></p>
+        <p>
+          <h4>Nodes</h4>
+          <select id='nodes' class='form-control'>
+            <option value='https://api.steemit.com'>https://api.steemit.com</option>
+            <option value='https://rpc.buildteam.io'>https://rpc.buildteam.io</option>
+            <option value='https://gtg.steem.house:8090'>https://gtg.steem.house:8090</option>
+            <option value='https://steemd.minnowsupportproject.org'>https://steemd.minnowsupportproject.org</option>
+            <option value='https://rpc.steemliberator.com'>https://rpc.steemliberator.com</option>
+            <option value='https://seed.bitcoiner.me'>https://seed.bitcoiner.me</option>
+            <option value='https://steemd.pevo.science'>https://steemd.pevo.science</option>
+            <option value='https://steemd.privex.io'>https://steemd.privex.io</option>
+            <option value='https://seed.bitcoiner.me'>https://seed.bitcoiner.me</option>
+            <option value='https://steemd.steemitdev.com'>https://steemd.steemitdev.com</option>
+            <option value='https://steemd.steemitstage.com'>https://steemd.steemitstage.com</option>
+          </select>
+        </p>
+        <p>
+          <h4>Steem Tools API Servers</h4>
+          <select id='server' class='form-control'>
+            <option value='helloacm.com'>New York, USA</option>
+            <option value='uploadbeta.com'>London, UK</option>
+            <option value='steakovercooked.com'>Fremont, USA</option>
+            <option value='happyukgo.com'>Tokyo, Japan</option>
+          </select>
+        </p>
+        <p>
+          <h4>Private Posting Key</h4>
+          <input type=password class='form-control' id='posting_key'>
+        </p>
+        <p>
+          <h4>Additional ID's (Tab General)</h4>
+          <textarea class="form-control" id="friends" placeholder="Enter Your Friends' IDs one ID per line" rows=10></textarea>
+        </p>        
+        <p><button class='form-control' style='width: 70px' id='save_btn'>Save</button></p>
+      </div>
+      <div id="tabs-tools">    
+        <h4>Reputation Calculator</h4>
+        <p><input type='number' class='form-control' id='steemit_reputation' name='steemit_reputation' placeholder="Raw Reputation Value" value=''></p>
+        <p><button class='form-control' style='width: 110px' id='btn_rep'>Calculate</button></p>
+        <div id='rep_result'> </div>
+      </div>       
+      <div id="tabs-log">
+        <h4>Proudly brought to you by <a target=_blank href="https://steemit.com/@justyy">@justyy</a></h4>
+        <textarea readonly class='form-control' rows=15 id='about'>           
+        </textarea>         
+      </div>      
+    </div>
+  </body>
+</html>
