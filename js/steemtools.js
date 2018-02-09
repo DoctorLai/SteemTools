@@ -4,6 +4,11 @@
 const default_node = 'https://api.steemit.com';
 steem.api.setOptions({ url: default_node });
 
+// get Node
+const getNode = () => {
+    return $('select#nodes').val();
+}
+
 // default server
 const default_server = 'helloacm.com';
 
@@ -21,6 +26,9 @@ const getIdForDiv = (id) => {
 
 // try best to return a valid steem id
 const prepareId = (id) => {
+    if (id == undefined) {
+        return "";
+    }
     return id.replace("@", "").trim().toLowerCase();
 }
 
@@ -86,6 +94,7 @@ function getVP(id, dom, server) {
 
 // get curation stats
 function getCuration(id, dom, server) {
+    server = server || default_server;
     let api = 'https://' + server + '/api/steemit/account/curation/?cached&id=' + id;
     logit("calling " + api);
     $.ajax({
@@ -150,6 +159,7 @@ const getAccountValue = (id, dom, server) => {
 
 // get api server infor
 function getServerInfo(server, dom) {
+    server = server || default_server;
     let api = 'https://' + server + '/api/steemit/blocknumber/steemsql';
     logit("calling " + api);
     $.ajax({
@@ -228,6 +238,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     getRep(id, $("div#account_rep"), settings['nodes']);
                     getAccountValue(id, $("div#account_value"), settings['nodes']);
                     $('input#delegator').val(id);
+                    $('input#delegatorid').val(id);
                     $('input#delid').val(id);
                     $('a#profile').html("@" + id);
                     $('h4#profile_id').html("@" + id);
@@ -330,12 +341,67 @@ document.addEventListener('DOMContentLoaded', function() {
             alert('Not a Valid Steem ID.');
         }
     });
+    // find a list of delegators
+    // search a id when press Enter
+    textPressEnterButtonClick($('input#delegatorid'), $('button#delegators_btn'));
+    $('button#delegators_btn').click(function() {
+        let id = prepareId($('input#delegatorid').val());
+        let server = getServer();
+        server = server || default_server;
+        $('div#delegators_div').html('<img src="images/loading.gif"/>');
+        if (validId(id)) {
+            $.ajax({ 
+                dataType: "json",
+                url: "https://" + server + "/api/steemit/delegators/?cached&id="+id,
+                cache: false,
+                success: function (response) {
+                    let result = response;
+                    if (result && result.length > 0) {
+                        let s = '<h4><B>' + result.length + '</B> Delegator(s)</h4>';
+                        s += '<table id="dvlist2" class="sortable">';
+                        s += '<thead><tr><th>Delegator</th><th>Steem Power (SP)</th><th>Vests</th><th>Time</th></tr></thead><tbody>';
+                        let total_sp = 0;
+                        let total_vest = 0;
+                        for (let i = 0; i < result.length; i ++) {
+                            total_sp += result[i]['sp'];
+                            total_vest += result[i]['vests'];  
+                            s += '<tr>';
+                            s += '<td><a target=_blank rel=nofollow href="https://steemit.com/@' + result[i]['delegator'] + '">@' + result[i]['delegator'] + '</a><BR/><img style="width:75px;height:75px" src="https://steemitboard.com/@' + result[i]['delegator'] + '/level.png"></td>';
+                            s += '<td>' + (result[i]['sp']).toFixed(2) + '</td>';
+                            s += '<td>' + (result[i]['vests']).toFixed(2) + '</td>';
+                            s += '<td>' + result[i]['time'] + '</td>';
+                            s += '</tr>';
+                        }              
+                        s += '</tbody>';
+                        s += '<tfoot><tr>';
+                        s += '<th>Total: </th><th></th><th>' + (total_sp.toFixed(2)) + ' SP</th><th>' + (total_vest.toFixed(2)) + ' VESTS</th><th></th>'; 
+                        s += '</tr></tfoot>';
+                        s += '</table>';
+                        $('div#delegators_div').html(s);
+                        $('div#delegators_div_stats').html(total_sp.toFixed(2) + " SP, " + total_vest.toFixed(2) + " VESTS");
+                        sorttable.makeSortable(document.getElementById("dvlist2"));
+                    } else {
+                        $('div#delegators_div').html("<font color=blue>It could be any of these: (1) No Delegators (2) Invalid ID (3) API or SteemSQL server failed. Contact <a rel=nofollow target=_blank href='https://steemit.com/@justyy/'>@justyy</a> if you are not sure. Thanks!</font>");
+                    }          
+                },
+                error: function(request, status, error) {
+                    $('div#delegators_div').html('<font color=red>API/SteemSQL Server (' + server + error + ') is currently offline. Please try again later!' + request.responseText + '</font>');
+                },          
+                complete: function(data) {
+                
+                }
+            });
+        } else {
+            alert('Not a Valid Steem ID.');
+        }        
+    })            
     // find a list of delegatees
     // search a id when press Enter
     textPressEnterButtonClick($('input#delid'), $('button#delegatees_btn'));
     $('button#delegatees_btn').click(function() {
         let id = prepareId($('input#delid').val());
         let server = getServer();
+        server = server || default_server;
         $('div#delegatees_div').html('<img src="images/loading.gif"/>');
         if (validId(id)) {
             $.ajax({ 
@@ -345,7 +411,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 success: function (response) {
                     let result = response;
                     if (result && result.length > 0) {
-                        let s = '<h4><B>' + result.length + '</B> Delegatee(s) <div id="stats"> </div></h4>';
+                        let s = '<h4><B>' + result.length + '</B> Delegatee(s)</h4>';
                         s += '<table id="dvlist" class="sortable">';
                         s += '<thead><tr><th>Delegatee</th><th>Steem Power (SP)</th><th>Vests</th><th>Time</th></tr></thead><tbody>';
                         let total_sp = 0;
