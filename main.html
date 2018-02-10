@@ -29,6 +29,15 @@
     .vpbar {width: 100%; background-color: grey;}
     .vp {color: white;}
     #delegation-form input {width:100%; max-width:100%;}    
+    #consolelog {color:white;background:black;}
+    textarea{
+        background: url(images/line.png);
+        background-attachment: local;
+        background-repeat: no-repeat;
+        padding-left: 35px;
+        padding-top: 10px;
+        border-color:#ccc;
+    }    
     </style>
   </head>
   <body>
@@ -41,6 +50,7 @@
         <li><a href="#tabs-delegators">Delegators</a></li>
         <li><a href="#tabs-setting">Setting</a></li>
         <li><a href="#tabs-tools">Tools</a></li>
+        <li><a href="#tabs-console">Steem-Js</a></li>
         <li><a href="#tabs-log">Log</a></li>        
       </ul>
       <div id="tabs-general">
@@ -138,7 +148,35 @@
         <div id='basic_result_vp_100' class="vpbar"> <div id='basic_result_vp'> </div> </div>
         <div id='basic_result_rep'> </div>
         <div id='basic_result_value'> </div>
-      </div>       
+      </div>   
+      <div id="tabs-console">    
+        <h4>steem-js console</h4>
+        <form class='form-inline'>
+        <p>
+          <div id='consolelog'> </div>
+          <textarea class="lined" id='steemjs-source' style='width:100%' rows=15>
+// Press Alt + Enter to Evaluate
+// Press Alt + Backspace to Clear Consolee
+
+steem.api.getAccounts(['justyy', 'mkt'], function(err, result) {
+  if (!err) {
+    for (let i = 0; i < result.length; ++ i) {
+      let reputation = result[i].reputation;
+      let formatted_rep = steem.formatter.reputation(reputation);
+      console.log(result[i].name + "'s Reputation is " + formatted_rep);
+    }
+  } else {
+    console.log("Steem API Error: ", err);
+  }
+});            
+          </textarea>          
+        </p>
+        <p>
+          <input type='button' class='form-control' style='width: 110px' id='btn_run' value='Run'>
+          <input type='button' class='form-control' style='width: 110px' id='btn_clear' value='Clear'>
+        </form>
+        <div id='console'> </div>
+      </div>            
       <div id="tabs-log">
         <h4>Proudly brought to you by <a target=_blank href="https://steemit.com/@justyy">@justyy</a></h4>
         <textarea readonly class='form-control' rows=15 id='about'>           

@@ -448,5 +448,34 @@ document.addEventListener('DOMContentLoaded', function() {
         } else {
             alert('Not a Valid Steem ID.');
         }        
-    })
+    });
+    // redirecting console
+    console.log = function(x) {
+        for (let i = 0; i < arguments.length; i++) {
+            let x = arguments[i];
+            $('div#consolelog').append(x + "<BR/>");
+        }                
+    }
+    // clear
+    $('input#btn_clear').click(function() {
+        $('div#consolelog').html('');
+    });
+    // alt + enter to evalute
+    // alt + backspace to clear
+    $('textarea#steemjs-source').keydown(function (e) {
+        if (e.altKey && e.keyCode == 13) {
+            $('input#btn_run').click();
+        }
+        if (e.altKey && e.keyCode == 8) {
+            $('input#btn_clear').click();
+        }        
+    });    
+    $('input#btn_run').click(function() {
+        let js = $('textarea#steemjs-source').val();
+        try {
+            eval(js);
+        } catch (e) {
+            $('div#consolelog').append("Error: " + e);
+        }
+    });
 }, false);
