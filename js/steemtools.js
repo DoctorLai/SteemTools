@@ -4,6 +4,18 @@
 const default_node = 'https://api.steemit.com';
 steem.api.setOptions({ url: default_node });
 
+// given a perm link restore its full Steem URL
+const restore = (url) => {
+    var pat = /(re-\w+-)*((\w+\-)*)/g;
+    var my = pat.exec(url);
+    if (my[1] && my[2]) {       
+        var author = my[1].split('-')[1];
+        var link = my[2].slice(0, -1);
+        return 'https://steemit.com/@' + author + '/' + link;
+    }
+    return null;
+}
+
 // get Node
 const getNode = () => {
     return $('select#nodes').val();
@@ -219,6 +231,28 @@ function getNodeInfo(server, dom) {
     });    
 }
 
+// save settings
+const saveSettings = () => {
+    let id = $('input#steemit_id').val().trim();
+    let server = $('select#server').val();
+    let friends = $('textarea#friends').val();
+    let posting_key = $('input#posting_key').val().trim();
+    let nodes = $('select#nodes').val();
+    let steemjs = $('textarea#steemjs-source').val().trim();
+    let settings = {};
+    settings['steemit_id'] = id;
+    settings['server'] = server;
+    settings['friends'] = friends;
+    settings['posting_key'] = posting_key;
+    settings['nodes'] = nodes;
+    settings['steemjs'] = steemjs;
+    chrome.storage.sync.set({ 
+        steemtools: settings
+    }, function() {
+        alert('Settings Saved (Required: Reload Extension)');
+    });
+}
+
 // on document ready
 document.addEventListener('DOMContentLoaded', function() {
     // init tabs
@@ -240,6 +274,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     $('input#delegator').val(id);
                     $('input#delegatorid').val(id);
                     $('input#delid').val(id);
+                    $('input#deleted_id').val(id);
                     $('a#profile').html("@" + id);
                     $('h4#profile_id').html("@" + id);
                     getCuration(id, $("div#profile_data"), settings['server']);
@@ -269,7 +304,12 @@ document.addEventListener('DOMContentLoaded', function() {
             // get server api blocknumber    
             $('select#server').val(settings['server']);
             getServerInfo(settings['server'], $('div#serverinfo'));
-            $('input#posting_key').val(settings['posting_key']);            
+            $('input#posting_key').val(settings['posting_key']);   
+            // steemjs source
+            let steemjs = settings['steemjs'];
+            if (steemjs) {
+                $('textarea#steemjs-source').val(settings['steemjs']);
+            }
         } else {
             // get node infor
             $('select#nodes').val(default_node);
@@ -280,22 +320,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
     $('button#save_btn').click(function() {
-        let id = $('input#steemit_id').val().trim();
-        let server = $('select#server').val();
-        let friends = $('textarea#friends').val();
-        let posting_key = $('input#posting_key').val().trim();
-        let nodes = $('select#nodes').val();
-        let settings = {};
-        settings['steemit_id'] = id;
-        settings['server'] = server;
-        settings['friends'] = friends;
-        settings['posting_key'] = posting_key;
-        settings['nodes'] = nodes;
-        chrome.storage.sync.set({ 
-            steemtools: settings
-        }, function() {
-            alert('Settings Saved (Required: Reload Extension)');
-        });
+        saveSettings();
     });  
     // about
     let manifest = chrome.runtime.getManifest();    
@@ -326,6 +351,59 @@ document.addEventListener('DOMContentLoaded', function() {
         let steemconnect = "https://v2.steemconnect.com/sign/delegateVestingShares?delegator=" + delegator + "&delegatee=" + delegatee + "&vesting_shares=" + amount + " " + unit; 
         chrome.tabs.create({ url: steemconnect });        
     });  
+    // find a list of deleted comments
+    // search a id when press Enter
+    textPressEnterButtonClick($('input#deleted_id'), $('button#deleted_btn'));
+    $('button#deleted_btn').click(function() {        
+        let id = prepareId($('input#deleted_id').val());
+        let server = getServer();        
+        server = server || default_server;
+        $('div#deleted_div').html('<img src="images/loading.gif"/>');
+        if (validId(id)) {
+            // disable the button while API is not finished yet.
+            $('button#deleted_btn').attr("disabled", true);
+            $.ajax({ 
+                dataType: "json",
+                url: "https://" + server + "/api/steemit/deleted/?cached&id="+id,
+                cache: false,
+                success: function (response) {
+                    let result = response;
+                    if (result && result.length > 0) {
+                        let s = '<h4><B>' + result.length + '</B> Deleted Comments/Posts(s)</h4>';
+                        s += '<table id="dvlist_deleted" class="sortable">';
+                        s += '<thead><tr><th>Block Number</th><th>Permlink</th><th>Post</th><th>Witness</th><th>Time</th></tr></thead><tbody>';
+                        for (var i = 0; i < result.length; i ++) {
+                            s += '<tr>';
+                            s += '<td>' + result[i]['block_num'] + '</td>';
+                            var x = encodeURIComponent("https://steemit.com/@" + id + "/" + result[i]['permlink']);
+                            var y = restore(result[i]['permlink']);
+                            s += '<td><a target=_blank rel=nofollow href="https://phist.steemdata.com/history?identifier=' + x + '">' + result[i]['permlink'] + '</a></td>';
+                            s += '<td><a target=_blank rel=nofollow href="' + y + '">' + 'Post' + '</a></td>';                                
+                            s += '<td><a target=_blank rel=nofollow href="https://steemit.com/@' + result[i]['witness'] + '">@' + result[i]['witness'] + '</a><BR/><img style="width:75px;height:75px" src="https://steemitboard.com/@' + result[i]['witness'] + '/level.png"></td>';
+                            s += '<td>' + result[i]['time'] + '</td>';
+                            s += '</tr>';
+                        }              
+                        s += '</tbody>';
+                        s += '</table>';
+                        $('div#deleted_div').html(s);
+                        sorttable.makeSortable(document.getElementById("dvlist_deleted"));
+                    } else {
+                        $('div#deleted_div').html("<font color=blue>It could be any of these: (1) No Deleted Comments (2) Invalid ID (3) API or SteemSQL server failed. Contact <a rel=nofollow target=_blank href='https://steemit.com/@justyy/'>@justyy</a> if you are not sure. Thanks!</font>");
+                    }          
+                },
+                error: function(request, status, error) {
+                    $('div#deleted_div').html('<font color=red>API/SteemSQL Server (' + server + error + ') is currently offline. Please try again later!' + request.responseText + '</font>');
+                },          
+                complete: function(data) {
+                    // re-enable the button
+                    $('button#deleted_btn').attr("disabled", false);
+                }
+            });
+        } else {
+            alert('Not a Valid Steem ID.');
+            $('div#deleted_div').html('');
+        }        
+    });       
     // basic information search
     // search a id when press Enter
     textPressEnterButtonClick($('input#steem_basic'), $('button#btn_basic'));
@@ -350,6 +428,8 @@ document.addEventListener('DOMContentLoaded', function() {
         server = server || default_server;
         $('div#delegators_div').html('<img src="images/loading.gif"/>');
         if (validId(id)) {
+            // disable the button while API not return yet.
+            $('button#delegators_btn').attr('disabled', true);
             $.ajax({ 
                 dataType: "json",
                 url: "https://" + server + "/api/steemit/delegators/?cached&id="+id,
@@ -388,13 +468,15 @@ document.addEventListener('DOMContentLoaded', function() {
                     $('div#delegators_div').html('<font color=red>API/SteemSQL Server (' + server + error + ') is currently offline. Please try again later!' + request.responseText + '</font>');
                 },          
                 complete: function(data) {
-                
+                    // re-enable the button
+                    $('button#delegators_btn').attr('disabled', false);
                 }
             });
         } else {
             alert('Not a Valid Steem ID.');
+            $('div#deleted_div').html('');
         }        
-    })            
+    });            
     // find a list of delegatees
     // search a id when press Enter
     textPressEnterButtonClick($('input#delid'), $('button#delegatees_btn'));
@@ -404,6 +486,8 @@ document.addEventListener('DOMContentLoaded', function() {
         server = server || default_server;
         $('div#delegatees_div').html('<img src="images/loading.gif"/>');
         if (validId(id)) {
+            // disable the button while waiting for API returns
+            $('button#delegatees_btn').attr('disabled', true);
             $.ajax({ 
                 dataType: "json",
                 url: "https://" + server + "/api/steemit/delegatees/?cached&id="+id,
@@ -442,11 +526,13 @@ document.addEventListener('DOMContentLoaded', function() {
                     $('div#delegatees_div').html('<font color=red>API/SteemSQL Server (' + server + error + ') is currently offline. Please try again later!' + request.responseText + '</font>');
                 },          
                 complete: function(data) {
-                
+                    // re-enable the button
+                    $('button#delegatees_btn').attr('disabled', false);
                 }
             });
         } else {
             alert('Not a Valid Steem ID.');
+            $('div#deleted_div').html('');
         }        
     });
     // redirecting console
@@ -477,5 +563,9 @@ document.addEventListener('DOMContentLoaded', function() {
         } catch (e) {
             $('div#consolelog').append("Error: " + e);
         }
+    });
+    // save source of steem-js
+    $('input#btn_save').click(function() {
+        saveSettings();
     });
 }, false);

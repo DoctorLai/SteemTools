@@ -51,6 +51,7 @@
         <li><a href="#tabs-setting">Setting</a></li>
         <li><a href="#tabs-tools">Tools</a></li>
         <li><a href="#tabs-console">Steem-Js</a></li>
+        <li><a href="#tabs-deleted">Deleted</a></li>
         <li><a href="#tabs-log">Log</a></li>        
       </ul>
       <div id="tabs-general">
@@ -89,13 +90,13 @@
         </form>
       </div>        
       <div id="tabs-delegatees">
-        <p><h4>Your SteemId ID: </h4><input type='text' class='form-control' id='delid' name='delid' placeholder="Your Steem ID without @" value=''></p>
+        <p><h4>SteemId ID: </h4><input type='text' class='form-control' id='delid' name='delid' placeholder="Steem ID without @" value=''></p>
         <p><button class='form-control' style='width: 70px' id='delegatees_btn'>Query</button></p>
         <div id='delegatees_div'> </div>
         <div id='delegatees_div_stats'> </div>
       </div>  
       <div id="tabs-delegators">
-        <p><h4>Your SteemId ID: </h4><input type='text' class='form-control' id='delegatorid' name='delegatorid' placeholder="Your Steem ID without @" value=''></p>
+        <p><h4>SteemId ID: </h4><input type='text' class='form-control' id='delegatorid' name='delegatorid' placeholder="Steem ID without @" value=''></p>
         <p><button class='form-control' style='width: 70px' id='delegators_btn'>Query</button></p>
         <div id='delegators_div'> </div>
         <div id='delegators_div_stats'> </div>
@@ -174,9 +175,16 @@ steem.api.getAccounts(['justyy', 'mkt'], function(err, result) {
         <p>
           <input type='button' class='form-control' style='width: 110px' id='btn_run' value='Run'>
           <input type='button' class='form-control' style='width: 110px' id='btn_clear' value='Clear'>
+          <input type='button' class='form-control' style='width: 110px' id='btn_save' value='Save'>
+        </p>
         </form>
         <div id='console'> </div>
-      </div>            
+      </div>    
+      <div id="tabs-deleted">
+        <p><h4>SteemId ID: </h4><input type='text' class='form-control' id='deleted_id' name='deleted_id' placeholder="Steem ID without @" value=''></p>
+        <p><button class='form-control' style='width: 70px' id='deleted_btn'>Query</button></p>
+        <div id='deleted_div'> </div>
+      </div>                 
       <div id="tabs-log">
         <h4>Proudly brought to you by <a target=_blank href="https://steemit.com/@justyy">@justyy</a></h4>
         <textarea readonly class='form-control' rows=15 id='about'>           
