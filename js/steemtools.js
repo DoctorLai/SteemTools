@@ -3,71 +3,18 @@
 // default api node
 const default_node = 'https://api.steemit.com';
 steem.api.setOptions({ url: default_node });
-
-// given a perm link restore its full Steem URL
-const restore = (url) => {
-    var pat = /(re-\w+-)*((\w+\-)*)/g;
-    var my = pat.exec(url);
-    if (my[1] && my[2]) {       
-        var author = my[1].split('-')[1];
-        var link = my[2].slice(0, -1);
-        return 'https://steemit.com/@' + author + '/' + link;
-    }
-    return null;
-}
+// default server
+const default_server = 'helloacm.com';
 
 // get Node
 const getNode = () => {
     return $('select#nodes').val();
 }
 
-// default server
-const default_server = 'helloacm.com';
-
-// return if valid steem id
-const validId = (id) => {
-    id = id.trim();
-    let pat = /^[a-z0-9\-\.]+$/g;
-    return id && pat.test(id);
-}
-
-// dots can't be used as a valid HTML div identifier
-const getIdForDiv = (id) => {
-    return id.replace(".", "");
-}
-
-// try best to return a valid steem id
-const prepareId = (id) => {
-    if (id == undefined) {
-        return "";
-    }
-    return id.replace("@", "").trim().toLowerCase();
-}
-
-// button click when press enter in text
-const textPressEnterButtonClick = (text, button) => {
-    text.keydown(function(e) {
-        if (e.keyCode == 13) {
-            button.click();
-        }
-    });        
-}
-
 // return current API server
 const getServer = () => {
     let server = $('select#server').val();
     return server;
-}
-
-// get steem profile url given id
-const getSteemUrl = (id) => {
-    return "<a target=_blank href='https://steemit.com/@" + id + "'>@" + id + "</a>";
-}
-
-// get chrome version
-const getChromeVersion = () => {
-    var raw = navigator.userAgent.match(/Chrom(e|ium)\/([0-9]+)\./);
-    return raw ? parseInt(raw[2], 10) : false;
 }
 
 // log in the textarea
@@ -275,6 +222,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     $('input#delegatorid').val(id);
                     $('input#delid').val(id);
                     $('input#deleted_id').val(id);
+                    $('input#downvoters_id').val(id);
                     $('a#profile').html("@" + id);
                     $('h4#profile_id').html("@" + id);
                     getCuration(id, $("div#profile_data"), settings['server']);
@@ -332,6 +280,60 @@ document.addEventListener('DOMContentLoaded', function() {
         let reputation = steem.formatter.reputation(rep);
         $('div#rep_result').html("Reputation of " + rep + " = <B>" + reputation + "</B>");
     })
+    // check who downvoted you
+    // search a id when press Enter
+    textPressEnterButtonClick($('input#downvoters_id'), $('button#downvote_btn'));
+    $('button#downvote_btn').click(function() {        
+        let id = prepareId($('input#downvoters_id').val());
+        let server = getServer();        
+        server = server || default_server;
+        $('div#downvoters_div').html('<img src="images/loading.gif"/>');
+        if (validId(id)) {
+            // disable the button while API is not finished yet.
+            $('button#downvote_btn').attr("disabled", true);
+            $.ajax({ 
+                dataType: "json",
+                url: "https://" + server + "/api/steemit/downvote/?cached&id="+id,
+                cache: false,
+                success: function (response) {
+                    let result = response;
+                    if (result && result.length > 0) {
+                        let s = '<h4><B>' + result.length + '</B> downvotes in the past year.</h4>';
+                        s += '<table id="downvote_list" class="sortable">';
+                        s += '<thead><tr><th>Down-Voter</th><th>Permlink</th><th>Weight %</th><th>Time</th></tr></thead><tbody>';
+                        let total = 0;
+                        for (let i = 0; i < result.length; ++ i) {
+                            s += '<tr>';
+                            total += result[i]['weight'] / 100;
+                            s += '<td>' + getSteemUrl(result[i]['voter']) + '<BR/><img style="width:75px;height:75px" src="https://steemitboard.com/@' + result[i]['voter'] + '/level.png"></td>';
+                            s += '<td>' + '<a target=_blank rel=nofollow href="https://steemit.com/@' + id + '/' + result[i]['permlink'] + '">' + result[i]['permlink'] + '</a></td>';
+                            s += '<td>' + (result[i]['weight']/100).toFixed(2) + '</td>';
+                            s += '<td>' + result[i]['time'] + '</td>';
+                            s += '</tr>';
+                        }              
+                        s += '<tfoot><tr>';
+                        s += '<th>Total: </th><th></th><th></th><th>' + total.toFixed(2) + '</th><th></th>'; 
+                        s += '</tr></tfoot>';
+                        s += '</table>';                 
+                        $('div#downvoters_div').html(s);
+                        sorttable.makeSortable(document.getElementById("downvote_list"));
+                    } else {
+                        $('div#downvoters_div').html("<font color=blue>It could be any of these: (1) No Deleted Comments (2) Invalid ID (3) API or SteemSQL server failed. Contact <a rel=nofollow target=_blank href='https://steemit.com/@justyy/'>@justyy</a> if you are not sure. Thanks!</font>");
+                    }          
+                },
+                error: function(request, status, error) {
+                    $('div#downvoters_div').html('<font color=red>API/SteemSQL Server (' + server + error + ') is currently offline. Please try again later!' + request.responseText + '</font>');
+                },          
+                complete: function(data) {
+                    // re-enable the button
+                    $('button#downvote_btn').attr("disabled", false);
+                }
+            });
+        } else {
+            alert('Not a Valid Steem ID.');
+            $('div#downvoters_div').html('');
+        }        
+    });      
     // delegation form
     $('input#delegate_btn').click(function() {
         let delegator = $("input#delegator").val().toLowerCase().trim();
@@ -568,4 +570,36 @@ document.addEventListener('DOMContentLoaded', function() {
     $('input#btn_save').click(function() {
         saveSettings();
     });
+    // ping tests
+    $('button#btn_ping').click(function() {
+        // clear the test window
+        $('div#ping_result').html('');
+        // test all nodes
+        $("select#nodes option").each(function() {
+            let node = $(this).val();
+            ping(node).then(function(delta) {
+                let msg = '<i><font color=white>' + node + '</font></i>: ' + 'Ping time was <font color=green>' + String(delta) + '</font> ms<BR/>';                
+                $('div#ping_result').append(msg);
+            }).catch(function(err) {
+                let msg = '<i><font color=white>' + node + '</font></i>: ' + '<font color=red>' + 'Time-out: ' + err + '</font><BR/>';                
+                $('div#ping_result').append(msg);
+            });            
+        });
+    });
+    // server ping tests
+    $('button#btn_server_ping').click(function() {
+        // clear the test window
+        $('div#ping_server_result').html('');
+        // test all nodes
+        $("select#server option").each(function() {
+            let node = "https://" + $(this).val();
+            ping(node).then(function(delta) {
+                let msg = '<i><font color=white>' + node + '</font></i>: ' + 'Ping time was <font color=green>' + String(delta) + '</font> ms<BR/>';                
+                $('div#ping_server_result').append(msg);
+            }).catch(function(err) {
+                let msg = '<i><font color=white>' + node + '</font></i>: ' + '<font color=red>' + 'Time-out: ' + err + '</font><BR/>';                
+                $('div#ping_server_result').append(msg);
+            });            
+        });
+    });    
 }, false);

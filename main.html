@@ -5,8 +5,7 @@
     <title>SteemIt Tools</title>
     <meta name="author" content="@justyy">
     <script src="js/jquery-3.2.1.min.js"></script>
-    <script src="js/steem.min.js"></script>     
-    <script src="js/steemtools.js"></script>
+    <script src="js/steem.min.js"></script>   
     <script src="js/moment.min.js"></script>
     <script src="js/Chart.min.js"></script>
     <script src="js/chartjs-plugin-streaming.js"></script>
@@ -20,6 +19,9 @@
     <link rel="stylesheet" href="css/export.css" type="text/css" media="all" />
     <link rel="stylesheet" href="css/jquery-ui.css" />
     <link rel="stylesheet" href="css/custom.css" />
+    <script src="js/ping.js"></script>   
+    <script src="js/functions.js"></script>
+    <script src="js/steemtools.js"></script>
     <script src="js/jquery-ui.js"></script>     
     <style>
     .ext-window {width: 770px;}
@@ -28,6 +30,7 @@
     .chart {width: 100%; height: 570px;}
     .vpbar {width: 100%; background-color: grey;}
     .vp {color: white;}
+    .button {width: 110px;}
     #delegation-form input {width:100%; max-width:100%;}    
     #consolelog {color:white;background:black;}
     textarea{
@@ -38,6 +41,7 @@
         padding-top: 10px;
         border-color:#ccc;
     }    
+    .console {background: black; color: yellow;}
     </style>
   </head>
   <body>
@@ -48,6 +52,7 @@
         <li><a href="#tabs-delegate-form">Delegate</a></li>
         <li><a href="#tabs-delegatees">Delegatees</a></li>
         <li><a href="#tabs-delegators">Delegators</a></li>
+        <li><a href="#tabs-downvoters">Downvoters</a></li>
         <li><a href="#tabs-setting">Setting</a></li>
         <li><a href="#tabs-tools">Tools</a></li>
         <li><a href="#tabs-console">Steem-Js</a></li>
@@ -100,7 +105,13 @@
         <p><button class='form-control' style='width: 70px' id='delegators_btn'>Query</button></p>
         <div id='delegators_div'> </div>
         <div id='delegators_div_stats'> </div>
-      </div>                    
+      </div>      
+      <div id="tabs-downvoters">
+        <p><h4>SteemId ID: </h4><input type='text' class='form-control' id='downvoters_id' name='downvoters_id' placeholder="Steem ID without @" value=''></p>
+        <p><button class='form-control' style='width: 70px' id='downvote_btn'>Query</button></p>
+        <div id='downvoters_div'> </div>
+        <div id='downvoters_div_stats'> </div>
+      </div>                      
       <div id="tabs-setting">
         <p><h4>Your SteemId ID: </h4><input type='text' class='form-control' id='steemit_id' name='steemit_id' placeholder="Your Steem ID without @" value=''></p>
         <p>
@@ -114,7 +125,6 @@
             <option value='https://seed.bitcoiner.me'>https://seed.bitcoiner.me</option>
             <option value='https://steemd.pevo.science'>https://steemd.pevo.science</option>
             <option value='https://steemd.privex.io'>https://steemd.privex.io</option>
-            <option value='https://seed.bitcoiner.me'>https://seed.bitcoiner.me</option>
             <option value='https://steemd.steemitdev.com'>https://steemd.steemitdev.com</option>
             <option value='https://steemd.steemitstage.com'>https://steemd.steemitstage.com</option>
           </select>
@@ -149,6 +159,12 @@
         <div id='basic_result_vp_100' class="vpbar"> <div id='basic_result_vp'> </div> </div>
         <div id='basic_result_rep'> </div>
         <div id='basic_result_value'> </div>
+        <h4>Steem Nodes Ping Tests<h4>
+        <p><button class='form-control button' id='btn_ping'>Test</button></p>
+        <div class=console id='ping_result'> </div> 
+        <h4>API Server Ping Tests<h4>
+        <p><button class='form-control button' id='btn_server_ping'>Test</button></p>
+        <div class=console id='ping_server_result'> </div>                 
       </div>   
       <div id="tabs-console">    
         <h4>steem-js console</h4>
@@ -173,9 +189,9 @@ steem.api.getAccounts(['justyy', 'mkt'], function(err, result) {
           </textarea>          
         </p>
         <p>
-          <input type='button' class='form-control' style='width: 110px' id='btn_run' value='Run'>
-          <input type='button' class='form-control' style='width: 110px' id='btn_clear' value='Clear'>
-          <input type='button' class='form-control' style='width: 110px' id='btn_save' value='Save'>
+          <input type='button' class='form-control' class=button id='btn_run' value='Run'>
+          <input type='button' class='form-control' class=button id='btn_clear' value='Clear'>
+          <input type='button' class='form-control' class=button id='btn_save' value='Save'>
         </p>
         </form>
         <div id='console'> </div>
