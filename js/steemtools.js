@@ -33,8 +33,13 @@ function getVP(id, dom, server) {
 
     steem.api.getAccounts([id], function(err, response) {
         if (!err) {
-            let result = (response[0].voting_power) / 100;
-            dom.html("<i>@" + id + "'s Voting Power is</i> <B>" + result + "%</B>");
+            let result = response[0].voting_power;
+            let last_vote_time = response[0].last_vote_time;
+            let diff = (Date.now() - Date.parse(last_vote_time)) / 1000;
+            let regenerated_vp = diff * 10000 / 86400 / 5;
+            let total_vp = (result + regenerated_vp) / 100;
+            total_vp = Math.min(100, total_vp);
+            dom.html("<i>@" + id + "'s Voting Power is</i> <B>" + total_vp.toFixed(2) + "%</B>");
             if (result < 30) {
                 dom.css("background-color", "red");
             } else if (result < 60) {
@@ -43,7 +48,7 @@ function getVP(id, dom, server) {
                 dom.css("background-color", "green");
             }
             dom.css("color", "white");
-            dom.css("width", result + "%");
+            dom.css("width", total_vp + "%");
             logit("API Finished: VP - " + server + ": " + id);
         } else {
             logit("API error: " + server + ": " + err);
@@ -78,7 +83,7 @@ function getCuration(id, dom, server) {
             logit('Status: ' + status);
         },
         complete: function(data) {
-            logit("API Finished: Curation + " + server + ': ' + id);
+            logit("API Finished: " + api);
         }             
     });    
 }
@@ -117,9 +122,9 @@ const getAccountValue = (id, dom, server) => {
 }
 
 // get api server infor
-function getServerInfo(server, dom) {
+function getServerInfo_sbds(server, dom) {
     server = server || default_server;
-    let api = 'https://' + server + '/api/steemit/blocknumber/steemsql';
+    let api = 'https://' + server + '/api/steemit/blocknumber/sbds';
     logit("calling " + api);
     $.ajax({
         type: "GET",
@@ -127,7 +132,7 @@ function getServerInfo(server, dom) {
         success: function(result) {
             let s = "<ul>";
             s += "<li><B>Server: </B>" + server + "</li>";
-            s += "<li><B>Block Number: </B>" + result['block_num'] + "</li>";
+            s += "<li><B>SBDS Block Number: </B><a target=_blank href='https://steemdb.com/block/" + result['block_num'] + "'>" + result['block_num'] + "</a></li>";
             s += "<li><B>Timestamp: </B>" + result['timestamp'] + "</li>";
             s += "</ul>";
             dom.html(s);
@@ -138,9 +143,36 @@ function getServerInfo(server, dom) {
             logit('Status: ' + status);
         },
         complete: function(data) {
-            logit("API Finished: getServerInfo: " + server);
+            logit("API Finished: " + api);
         }             
-    });    
+    });      
+}
+
+// get api server infor
+function getServerInfo(server, dom) {
+    server = server || default_server;
+    let api = 'https://' + server + '/api/steemit/blocknumber/steemsql';
+    logit("calling " + api);
+    $.ajax({
+        type: "GET",
+        url: api,
+        success: function(result) {
+            let s = "<ul>";
+            s += "<li><B>Server: </B>" + server + "</li>";
+            s += "<li><B>SteemSQL Block Number: </B><a target=_blank href='https://steemdb.com/block/" + result['block_num'] + "'>" + result['block_num'] + "</a></li>";
+            s += "<li><B>Timestamp: </B>" + result['timestamp'] + "</li>";
+            s += "</ul>";
+            dom.html(s);
+        },
+        error: function(request, status, error) {
+            logit('Response: ' + request.responseText);
+            logit('Error: ' + error );
+            logit('Status: ' + status);
+        },
+        complete: function(data) {
+            logit("API Finished: " + api);
+        }             
+    });      
 }
 
 // get node infor
@@ -173,7 +205,7 @@ function getNodeInfo(server, dom) {
             logit('Status: ' + status);
         },
         complete: function(data) {
-            logit("API Finished: getNodeInfo: " + server);
+            logit("API Finished: " + server);
         }             
     });    
 }
@@ -222,10 +254,37 @@ document.addEventListener('DOMContentLoaded', function() {
                     $('input#delegatorid').val(id);
                     $('input#delid').val(id);
                     $('input#deleted_id').val(id);
+                    $('input#powerdown_id').val(id);
                     $('input#downvoters_id').val(id);
                     $('a#profile').html("@" + id);
                     $('h4#profile_id').html("@" + id);
                     getCuration(id, $("div#profile_data"), settings['server']);
+                    $.ajax({ 
+                        dataType: "json",
+                        url: "https://" + settings['server'] + "/api/steemit/powerdown/?cached&id=" + id,
+                        cache: false,
+                        success: function (response) {
+                            let result = response;
+                            if (result && result.length > 0) {
+                                let s = '';
+                                s += '<h4>Powerdown Status of ' + getSteemUrl(id) + '</h4>';
+                                s += '<ul>';
+                                s += '<li>Week: ' + result[0]['week'] + '</li>';
+                                s += '<li>Vesting Shares: ' + result[0]['vesting_shares'] + '</li>';
+                                s += '<li>Steem Power: ' + result[0]['sp'] + '</li>';
+                                s += '<li>Timestamp: ' + result[0]['timestamp'] + '</li>';
+                                s += '</ul>';
+                                $('div#powerdown_data').html(s);
+                            } else {
+                                $('div#powerdown_data').html("<h5>No Power Down.</h5>");
+                            }       
+                        },
+                        error: function(request, status, error) {
+                            logit(error);
+                        },          
+                        complete: function(data) {                                                        
+                        }
+                    });                    
                 }
             }
             if (settings["friends"]) {
@@ -252,6 +311,7 @@ document.addEventListener('DOMContentLoaded', function() {
             // get server api blocknumber    
             $('select#server').val(settings['server']);
             getServerInfo(settings['server'], $('div#serverinfo'));
+            getServerInfo_sbds(settings['server'], $('div#serverinfo_sbds'));
             $('input#posting_key').val(settings['posting_key']);   
             // steemjs source
             let steemjs = settings['steemjs'];
@@ -265,6 +325,7 @@ document.addEventListener('DOMContentLoaded', function() {
             // get server api blocknumber    
             $('select#server').val(default_server);
             getServerInfo(default_server, $('div#serverinfo'));            
+            getServerInfo_sbds(default_server, $('div#serverinfo_sbds'));
         }
     });
     $('button#save_btn').click(function() {
@@ -279,7 +340,51 @@ document.addEventListener('DOMContentLoaded', function() {
         let rep = parseInt($('input#steemit_reputation').val());
         let reputation = steem.formatter.reputation(rep);
         $('div#rep_result').html("Reputation of " + rep + " = <B>" + reputation + "</B>");
-    })
+    })    
+    // check powerdown status
+    // search a id when press Enter
+    textPressEnterButtonClick($('input#powerdown_id'), $('button#powerdown_btn'));
+    $('button#powerdown_btn').click(function() {        
+        let id = prepareId($('input#powerdown_id').val());
+        let server = getServer();        
+        server = server || default_server;
+        $('div#powerdown_div').html('<img src="images/loading.gif"/>');
+        if (validId(id)) {
+            // disable the button while API is not finished yet.
+            $('button#powerdown_btn').attr("disabled", true);
+            $.ajax({ 
+                dataType: "json",
+                url: "https://" + server + "/api/steemit/powerdown/?cached&id="+id,
+                cache: false,
+                success: function (response) {
+                    let result = response;
+                    if (result && result.length > 0) {
+                        let s = '';
+                        s += '<h4>Powerdown Status of ' + getSteemUrl(id) + '</h4>';
+                        s += '<ul>';
+                        s += '<li>Week: ' + result[0]['week'] + '</li>';
+                        s += '<li>Vesting Shares: ' + result[0]['vesting_shares'] + '</li>';
+                        s += '<li>Steem Power: ' + result[0]['sp'] + '</li>';
+                        s += '<li>Timestamp: ' + result[0]['timestamp'] + '</li>';
+                        s += '</ul>';
+                        $('div#powerdown_div').html(s);
+                    } else {
+                        $('div#powerdown_div').html("<font color=blue>It could be any of these: (1) Currently No Powerdown (2) Invalid ID (3) API or SteemSQL server failed. Contact <a rel=nofollow target=_blank href='https://steemit.com/@justyy/'>@justyy</a> if you are not sure. Thanks!</font>");
+                    }          
+                },
+                error: function(request, status, error) {
+                    $('div#powerdown_div').html('<font color=red>API/SteemSQL Server (' + server + error + ') is currently offline. Please try again later!' + request.responseText + '</font>');
+                },          
+                complete: function(data) {
+                    // re-enable the button
+                    $('button#powerdown_btn').attr("disabled", false);
+                }
+            });
+        } else {
+            alert('Not a Valid Steem ID.');
+            $('div#powerdown_div').html('');
+        }        
+    });          
     // check who downvoted you
     // search a id when press Enter
     textPressEnterButtonClick($('input#downvoters_id'), $('button#downvote_btn'));

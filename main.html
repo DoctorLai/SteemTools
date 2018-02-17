@@ -57,6 +57,7 @@
         <li><a href="#tabs-tools">Tools</a></li>
         <li><a href="#tabs-console">Steem-Js</a></li>
         <li><a href="#tabs-deleted">Deleted</a></li>
+        <li><a href="#tabs-powerdown">Powerdown</a></li>
         <li><a href="#tabs-log">Log</a></li>        
       </ul>
       <div id="tabs-general">
@@ -64,6 +65,7 @@
         <div id='nodeinfo'> </div>
         <h4>API Server Status</h4>
         <div id='serverinfo'> </div>
+        <div id='serverinfo_sbds'> </div>
         <div id='account_vp_100' class="vpbar"> <div id='account_vp' class="vp"> </div> </div>
         <div id='account_rep'> </div>
         <div id='account_value'> </div>
@@ -72,6 +74,7 @@
       <div id="tabs-profile">
         <h3 id='profile_id'></h3>
         <div id='profile_data'> </div>
+        <div id='powerdown_data'> </div>
       </div>             
       <div id="tabs-delegate-form">
         <h3>SteemIt SP Delegation Tool</h3>
@@ -200,7 +203,12 @@ steem.api.getAccounts(['justyy', 'mkt'], function(err, result) {
         <p><h4>SteemId ID: </h4><input type='text' class='form-control' id='deleted_id' name='deleted_id' placeholder="Steem ID without @" value=''></p>
         <p><button class='form-control' style='width: 70px' id='deleted_btn'>Query</button></p>
         <div id='deleted_div'> </div>
-      </div>                 
+      </div>    
+      <div id="tabs-powerdown">
+        <p><h4>SteemId ID: </h4><input type='text' class='form-control' id='powerdown_id' name='powerdown_id' placeholder="Steem ID without @" value=''></p>
+        <p><button class='form-control' style='width: 70px' id='powerdown_btn'>Query</button></p>
+        <div id='powerdown_div'> </div>
+      </div>                     
       <div id="tabs-log">
         <h4>Proudly brought to you by <a target=_blank href="https://steemit.com/@justyy">@justyy</a></h4>
         <textarea readonly class='form-control' rows=15 id='about'>           
