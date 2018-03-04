@@ -48,7 +48,7 @@
     <div id="tabs" class='ext-window'>
       <ul>
         <li><a href="#tabs-general">General</a></li>
-        <li><a id="profile" href="#tabs-profile">Profile</a></li>
+        <li><a href="#tabs-profile">Profile</a></li>
         <li><a href="#tabs-delegate-form">Delegate</a></li>
         <li><a href="#tabs-delegatees">Delegatees</a></li>
         <li><a href="#tabs-delegators">Delegators</a></li>
@@ -56,6 +56,7 @@
         <li><a href="#tabs-setting">Setting</a></li>
         <li><a href="#tabs-tools">Tools</a></li>
         <li><a href="#tabs-console">Steem-Js</a></li>
+        <li><a href="#tabs-witness">Witness</a></li>
         <li><a href="#tabs-deleted">Deleted</a></li>
         <li><a href="#tabs-powerdown">Powerdown</a></li>
         <li><a href="#tabs-log">Log</a></li>        
@@ -158,7 +159,7 @@
         <div id='rep_result'> </div>
         <h4>Basic Information</h4>
         <p><input type='text' class='form-control' id='steem_basic' name='steem_basic' placeholder="Given a SteemID without @" value=''></p>
-        <p><button class='form-control' style='width: 110px' id='btn_basic'>Query</button></p>        
+        <p><button class='form-control' style='width: 110px' id='btn_basic'>Query</button></p>
         <div id='basic_result_vp_100' class="vpbar"> <div id='basic_result_vp'> </div> </div>
         <div id='basic_result_rep'> </div>
         <div id='basic_result_value'> </div>
@@ -198,7 +199,8 @@ steem.api.getAccounts(['justyy', 'mkt'], function(err, result) {
         </p>
         </form>
         <div id='console'> </div>
-      </div>    
+      </div>     
+  
       <div id="tabs-deleted">
         <p><h4>SteemId ID: </h4><input type='text' class='form-control' id='deleted_id' name='deleted_id' placeholder="Steem ID without @" value=''></p>
         <p><button class='form-control' style='width: 70px' id='deleted_btn'>Query</button></p>
@@ -208,12 +210,20 @@ steem.api.getAccounts(['justyy', 'mkt'], function(err, result) {
         <p><h4>SteemId ID: </h4><input type='text' class='form-control' id='powerdown_id' name='powerdown_id' placeholder="Steem ID without @" value=''></p>
         <p><button class='form-control' style='width: 70px' id='powerdown_btn'>Query</button></p>
         <div id='powerdown_div'> </div>
-      </div>                     
+      </div>  
+      <div id="tabs-witness">
+        <p><h4>SteemId ID: </h4><input type='text' class='form-control' id='witness_id' name='witness_id' placeholder="Steem ID without @" value=''></p>
+        <p><button class='form-control' style='width: 70px' id='witness_btn'>Query</button></p>
+        <div id='witness_div'> </div>
+      </div>                          
       <div id="tabs-log">
         <h4>Proudly brought to you by <a target=_blank href="https://steemit.com/@justyy">@justyy</a></h4>
         <textarea readonly class='form-control' rows=15 id='about'>           
-        </textarea>         
-      </div>      
+        </textarea> 
+        <BR/>
+        <a target=_blank href='https://www.paypal.me/doctorlai/3'><img src='images/paypal.png' style='height: 70px'></a> &nbsp;
+        <a target=_blank href='https://justyy.com/out/bitcoin'><img src='images/bitcoin.jpg' style='height: 70px'></a>                
+      </div>            
     </div>
   </body>
 </html>

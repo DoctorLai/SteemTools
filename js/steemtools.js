@@ -88,19 +88,22 @@ function getCuration(id, dom, server) {
     });    
 }
 
-// get reputation 
-const getRep = (id, dom, server) => {
+function getRep(id, dom, server) {
     server = server || default_node;
     steem.api.setOptions({ url: server });
 
-    steem.api.getAccounts([id], function(err, result) {
-        if (!err) {
-            dom.html("<i>@" + id + "'s Reputation is</i> <B>" + steem.formatter.reputation(result[0]['reputation']) + "</B>");
-            logit("getRep Finished: " + server + ": " + id);
+    steem.api.getAccounts([id], function(err, response) {
+        if (!err){
+            let result = formatReputation(response[0].reputation);
+            let av = steem.formatter.estimateAccountValue(response[0]);
+            av.then(value => {
+                dom.html("<i>@" + id + "'s Reputation is</i> <B>" + result + "</B><br><i>@" + id + "'s Total Account Value is</i> <B>$" + value + "</B>");
+            });
+            logit("API Finished: Reputation/Account Value - " + id);
         } else {
-            logit("getRep Error: " + err);
+            logit("API error: " + id + ": " + err);
         }
-    });    
+    });
 }
 
 // get account value
@@ -211,7 +214,7 @@ function getNodeInfo(server, dom) {
 }
 
 // save settings
-const saveSettings = () => {
+const saveSettings = (msg = true) => {
     let id = $('input#steemit_id').val().trim();
     let server = $('select#server').val();
     let friends = $('textarea#friends').val();
@@ -228,7 +231,9 @@ const saveSettings = () => {
     chrome.storage.sync.set({ 
         steemtools: settings
     }, function() {
-        alert('Settings Saved (Required: Reload Extension)');
+        if (msg) {
+            alert('Settings Saved (Required: Reload Extension)');
+        }
     });
 }
 
@@ -256,6 +261,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     $('input#deleted_id').val(id);
                     $('input#powerdown_id').val(id);
                     $('input#downvoters_id').val(id);
+                    $('input#witness_id').val(id);
                     $('a#profile').html("@" + id);
                     $('h4#profile_id').html("@" + id);
                     getCuration(id, $("div#profile_data"), settings['server']);
@@ -439,6 +445,74 @@ document.addEventListener('DOMContentLoaded', function() {
             $('div#downvoters_div').html('');
         }        
     });      
+    // find witness information
+    // search a id when press Enter
+    textPressEnterButtonClick($('input#witness_id'), $('button#witness_btn'));
+    $('button#witness_btn').click(function() {        
+        let id = prepareId($('input#witness_id').val());
+        let server = getServer();        
+        server = server || default_server;
+        $('div#witness_div').html('<img src="images/loading.gif"/>');
+        if (validId(id)) {
+            // disable the button while API is not finished yet.
+            $('button#witness_id').attr("disabled", true);
+            $.ajax({ 
+                dataType: "json",
+                url: "https://" + server + "/api/steemit/witness/?cached&id="+id,
+                cache: false,
+                success: function (response) {
+                    let result = response;
+                    if (result && result.length > 0) {
+                        let s = '<h4>Witness Details for ' + getSteemUrl(id) + '</h4>';
+                        s += '<table id="dvlist_witness">';
+                        s += '<thead><tr><th style="width:30%">Key</th><th>Value</th></tr></thead><tbody>';
+                        s += "<tr><td>signing_key</td><td><pre>" + result[0]['signing_key'] + "</pre></td></tr>";
+
+                        const addKeyValue = (result, x) => {
+                            return "<tr><td>" + x + "</td><td>" + result[0][x] + "</td></tr>";
+                        }
+
+                        s += addKeyValue(result, "total_missed");
+                        s += addKeyValue(result, "last_confirmed_block_num");
+                        s += addKeyValue(result, "running_version");
+                        s += "<tr><td>witness_post</td><td><a target=_blank href='" + result[0]['url'] + "'>" + result[0]['url'] + "</a></td></tr>";
+                        s += addKeyValue(result, "votes");
+                        s += addKeyValue(result, "votes_count");
+                        s += addKeyValue(result, "last_aslot");
+                        s += addKeyValue(result, "hardfork_version_vote");
+                        s += addKeyValue(result, "hardfork_time_vote");
+                        s += addKeyValue(result, "created");
+                        s += addKeyValue(result, "account_creation_fee");
+                        s += addKeyValue(result, "account_creation_fee_symbol");
+                        s += addKeyValue(result, "maximum_block_size");
+                        s += addKeyValue(result, "sbd_interest_rate");
+                        s += addKeyValue(result, "sbd_exchange_rate_base");
+                        s += addKeyValue(result, "sbd_exchange_rate_base_symbol");
+                        s += addKeyValue(result, "sbd_exchange_rate_quote");                        
+                        s += addKeyValue(result, "sbd_exchange_rate_quote_symbol");                        
+                        s += addKeyValue(result, "last_sbd_exchange_update");                        
+                        
+                        s += '</tbody>';
+                        s += '</table>';
+                        $('div#witness_div').html(s);
+                        sorttable.makeSortable(document.getElementById("dvlist_witness"));
+                    } else {
+                        $('div#witness_div').html("<font color=blue>It could be any of these: (1) Not a Witness Account (2) Invalid ID (3) API or SteemSQL server failed. Contact <a rel=nofollow target=_blank href='https://steemit.com/@justyy/'>@justyy</a> if you are not sure. Thanks!</font>");
+                    }          
+                },
+                error: function(request, status, error) {
+                    $('div#witness_div').html('<font color=red>API/SteemSQL Server (' + server + error + ') is currently offline. Please try again later!' + request.responseText + '</font>');
+                },          
+                complete: function(data) {
+                    // re-enable the button
+                    $('button#witness_btn').attr("disabled", false);
+                }
+            });
+        } else {
+            alert('Not a Valid Steem ID.');
+            $('div#witness_div').html('');
+        }        
+    });     
     // delegation form
     $('input#delegate_btn').click(function() {
         let delegator = $("input#delegator").val().toLowerCase().trim();
@@ -658,6 +732,7 @@ document.addEventListener('DOMContentLoaded', function() {
     $('textarea#steemjs-source').keydown(function (e) {
         if (e.altKey && e.keyCode == 13) {
             $('input#btn_run').click();
+            saveSettings(false);
         }
         if (e.altKey && e.keyCode == 8) {
             $('input#btn_clear').click();
@@ -669,6 +744,8 @@ document.addEventListener('DOMContentLoaded', function() {
             eval(js);
         } catch (e) {
             $('div#consolelog').append("Error: " + e);
+        } finally {
+            saveSettings(false);
         }
     });
     // save source of steem-js
