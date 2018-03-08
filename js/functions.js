@@ -99,3 +99,8 @@ const escapeHtml = (unsafe) => {
         .replace(/"/g, "&quot;")
         .replace(/'/g, "&#039;");
  }
+
+ // test if numbers
+ const isNumeric = (n) => {
+    return !isNaN(parseFloat(n)) && isFinite(n);
+}

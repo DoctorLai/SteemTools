@@ -32,7 +32,6 @@
     .vp {color: white;}
     .button {width: 110px;}
     #delegation-form input {width:100%; max-width:100%;}    
-    #consolelog {color:white;background:black;}
     textarea{
         background: url(images/line.png);
         background-attachment: local;
@@ -42,6 +41,8 @@
         border-color:#ccc;
     }    
     .console {background: black; color: yellow;}
+    #consolelog {color:white ;background:black;}    
+    div.inline-div {display: inline-block;}
     </style>
   </head>
   <body>
@@ -59,18 +60,19 @@
         <li><a href="#tabs-witness">Witness</a></li>
         <li><a href="#tabs-deleted">Deleted</a></li>
         <li><a href="#tabs-powerdown">Powerdown</a></li>
+        <li><a href="#tabs-wallet">Wallet</a></li>
         <li><a href="#tabs-log">Log</a></li>        
       </ul>
       <div id="tabs-general">
+        <div id='account_vp_100' class="vpbar"> <div id='account_vp' class="vp"> </div> </div>
+        <div id='account_rep'> </div>
+        <div id='account_value'> </div>
+        <div id='friends_vp_rep'> </div>
         <h4>Node Server Status</h4>
         <div id='nodeinfo'> </div>
         <h4>API Server Status</h4>
         <div id='serverinfo'> </div>
         <div id='serverinfo_sbds'> </div>
-        <div id='account_vp_100' class="vpbar"> <div id='account_vp' class="vp"> </div> </div>
-        <div id='account_rep'> </div>
-        <div id='account_value'> </div>
-        <div id='friends_vp_rep'> </div>
       </div>   
       <div id="tabs-profile">
         <h3 id='profile_id'></h3>
@@ -143,7 +145,7 @@
           </select>
         </p>
         <p>
-          <h4>Private Posting Key</h4>
+          <h4>Private Posting Key or Active Key</h4>
           <input type=password class='form-control' id='posting_key'>
         </p>
         <p>
@@ -215,7 +217,25 @@ steem.api.getAccounts(['justyy', 'mkt'], function(err, result) {
         <p><h4>SteemId ID: </h4><input type='text' class='form-control' id='witness_id' name='witness_id' placeholder="Steem ID without @" value=''></p>
         <p><button class='form-control' style='width: 70px' id='witness_btn'>Query</button></p>
         <div id='witness_div'> </div>
-      </div>                          
+      </div>      
+      <div id="tabs-wallet">
+        <h4>Wallet</h4>
+        <div id='balance_div'> </div>
+        <form class='form-inline'>
+          Amount: <input type='number' step='0.001' style='width: 350px' id='wallet_amount' class='form-control' value=0.001>
+          <select class='form-control' style='width: 200px' id='wallet_unit'>
+            <option value='SBD'>SBD</option>
+            <option value='STEEM'>STEEM</option>
+          </select><button type='button' style='width: 100px;' class='form-control' id='send_money'>Send</button><BR/>
+          <input type='text' class='form-control' id='wallet_memo' style='width: 98%' placeholder="MEMO"><BR/>
+          <span>
+            <textarea style='width:50%; resize: none; height: 225px;' class='form-control' id='accounts_to_send_list' placeholder="SteemIt Account IDs to Send (One Account Per Line)"></textarea>                   
+          </span>
+          <span>
+            <textarea readonly style='width:48%; resize: none; height: 225px; color: yellow; background: black' class='form-control' id='console_wallet'></textarea>
+          </span>
+        </form>
+      </div>                    
       <div id="tabs-log">
         <h4>Proudly brought to you by <a target=_blank href="https://steemit.com/@justyy">@justyy</a></h4>
         <textarea readonly class='form-control' rows=15 id='about'>           

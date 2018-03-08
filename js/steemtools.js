@@ -18,12 +18,14 @@ const getServer = () => {
 }
 
 // log in the textarea
-const logit = (msg) => {
+const logit = (dom, msg) => {
+    if ((msg == undefined) || (msg == null)) {
+        return;
+    }
     let d = new Date();
-    let n = d.toLocaleTimeString();
-    let dom = $('textarea#about');
+    let n = d.toLocaleTimeString();    
     let s = dom.val();
-    dom.val(s + "\n" + n + ": " + msg);
+    dom.val((s + "\n" + n + ": " + msg).trim());
 }
 
 // get voting power
@@ -49,9 +51,9 @@ function getVP(id, dom, server) {
             }
             dom.css("color", "white");
             dom.css("width", total_vp + "%");
-            logit("API Finished: VP - " + server + ": " + id);
+            logit($('textarea#about'), "API Finished: VP - " + server + ": " + id);
         } else {
-            logit("API error: " + server + ": " + err);
+            logit($('textarea#about'), "API error: " + server + ": " + err);
         }
     });   
 }
@@ -60,7 +62,7 @@ function getVP(id, dom, server) {
 function getCuration(id, dom, server) {
     server = server || default_server;
     let api = 'https://' + server + '/api/steemit/account/curation/?cached&id=' + id;
-    logit("calling " + api);
+    logit($('textarea#about'), "calling " + api);
     $.ajax({
         type: "GET",
         url: api,
@@ -78,12 +80,12 @@ function getCuration(id, dom, server) {
             dom.html(s);
         },
         error: function(request, status, error) {
-            logit('Response: ' + request.responseText);
-            logit('Error: ' + error );
-            logit('Status: ' + status);
+            logit($('textarea#about'), 'Response: ' + request.responseText);
+            logit($('textarea#about'), 'Error: ' + error );
+            logit($('textarea#about'), 'Status: ' + status);
         },
         complete: function(data) {
-            logit("API Finished: " + api);
+            logit($('textarea#about'), "API Finished: " + api);
         }             
     });    
 }
@@ -99,9 +101,9 @@ function getRep(id, dom, server) {
             av.then(value => {
                 dom.html("<i>@" + id + "'s Reputation is</i> <B>" + result + "</B><br><i>@" + id + "'s Total Account Value is</i> <B>$" + value + "</B>");
             });
-            logit("API Finished: Reputation/Account Value - " + id);
+            logit($('textarea#about'), "API Finished: Reputation/Account Value - " + id);
         } else {
-            logit("API error: " + id + ": " + err);
+            logit($('textarea#about'), "API error: " + id + ": " + err);
         }
     });
 }
@@ -117,9 +119,9 @@ const getAccountValue = (id, dom, server) => {
             av.then(x => {
                 dom.html("<i>@" + id + "'s Account Value is</i> <B>$" + x + "</B>");
             });
-            logit("getAccountValue Finished: " + server + ": " + id);
+            logit($('textarea#about'), "getAccountValue Finished: " + server + ": " + id);
         } else {
-            logit("getAccountValue Error: " + err);
+            logit($('textarea#about'), "getAccountValue Error: " + err);
         }
     });    
 }
@@ -128,7 +130,7 @@ const getAccountValue = (id, dom, server) => {
 function getServerInfo_sbds(server, dom) {
     server = server || default_server;
     let api = 'https://' + server + '/api/steemit/blocknumber/sbds';
-    logit("calling " + api);
+    logit($('textarea#about'), "calling " + api);
     $.ajax({
         type: "GET",
         url: api,
@@ -137,16 +139,17 @@ function getServerInfo_sbds(server, dom) {
             s += "<li><B>Server: </B>" + server + "</li>";
             s += "<li><B>SBDS Block Number: </B><a target=_blank href='https://steemdb.com/block/" + result['block_num'] + "'>" + result['block_num'] + "</a></li>";
             s += "<li><B>Timestamp: </B>" + result['timestamp'] + "</li>";
+            s += "<li><B>Gap: </B>" + result['seconds'] + " seconds</li>";
             s += "</ul>";
             dom.html(s);
         },
         error: function(request, status, error) {
-            logit('Response: ' + request.responseText);
-            logit('Error: ' + error );
-            logit('Status: ' + status);
+            logit($('textarea#about'), 'Response: ' + request.responseText);
+            logit($('textarea#about'), 'Error: ' + error );
+            logit($('textarea#about'), 'Status: ' + status);
         },
         complete: function(data) {
-            logit("API Finished: " + api);
+            logit($('textarea#about'), "API Finished: " + api);
         }             
     });      
 }
@@ -155,7 +158,7 @@ function getServerInfo_sbds(server, dom) {
 function getServerInfo(server, dom) {
     server = server || default_server;
     let api = 'https://' + server + '/api/steemit/blocknumber/steemsql';
-    logit("calling " + api);
+    logit($('textarea#about'), "calling " + api);
     $.ajax({
         type: "GET",
         url: api,
@@ -164,16 +167,17 @@ function getServerInfo(server, dom) {
             s += "<li><B>Server: </B>" + server + "</li>";
             s += "<li><B>SteemSQL Block Number: </B><a target=_blank href='https://steemdb.com/block/" + result['block_num'] + "'>" + result['block_num'] + "</a></li>";
             s += "<li><B>Timestamp: </B>" + result['timestamp'] + "</li>";
+            s += "<li><B>Gap: </B>" + result['seconds'] + " seconds</li>";
             s += "</ul>";
             dom.html(s);
         },
         error: function(request, status, error) {
-            logit('Response: ' + request.responseText);
-            logit('Error: ' + error );
-            logit('Status: ' + status);
+            logit($('textarea#about'), 'Response: ' + request.responseText);
+            logit($('textarea#about'), 'Error: ' + error );
+            logit($('textarea#about'), 'Status: ' + status);
         },
         complete: function(data) {
-            logit("API Finished: " + api);
+            logit($('textarea#about'), "API Finished: " + api);
         }             
     });      
 }
@@ -181,7 +185,7 @@ function getServerInfo(server, dom) {
 // get node infor
 function getNodeInfo(server, dom) {
     let api = server;
-    logit("calling " + api);
+    logit($('textarea#about'), "calling " + api);
     $.ajax({
         type: "GET",
         url: api,
@@ -191,8 +195,13 @@ function getNodeInfo(server, dom) {
             if (result['status'] !== undefined) {
                 s += "<li><B>Status: </B>" + result['status'] + "</li>";
                 s += "<li><B>Timestamp: </B>" + result['datetime'] + "</li>";
+                let dt = new Date();
+                let cur = new Date(result['datetime'].replace("T", " "));
+                let seconds = dt.getTime() - cur.getTime();
+                seconds = Math.abs(seconds) / 1000;
+                s += "<li><B>Gap: </B>" + seconds + " seconds</li>";
                 s += "<li><B>Commit: </B>" + result['source_commit'] + "</li>";
-                s += "<li><B>Docker: </B>" + result['docker_tag'] + "</li>";
+                s += "<li><B>Docker: </B>" + result['docker_tag'] + "</li>";                
             } else {
                 s += "<h5>Raw Header</h5>";
                 s += "<pre>";
@@ -203,12 +212,12 @@ function getNodeInfo(server, dom) {
             dom.html(s);
         },
         error: function(request, status, error) {
-            logit('Response: ' + request.responseText);
-            logit('Error: ' + error );
-            logit('Status: ' + status);
+            logit($('textarea#about'), 'Response: ' + request.responseText);
+            logit($('textarea#about'), 'Error: ' + error );
+            logit($('textarea#about'), 'Status: ' + status);
         },
         complete: function(data) {
-            logit("API Finished: " + server);
+            logit($('textarea#about'), "API Finished: " + server);
         }             
     });    
 }
@@ -228,6 +237,10 @@ const saveSettings = (msg = true) => {
     settings['posting_key'] = posting_key;
     settings['nodes'] = nodes;
     settings['steemjs'] = steemjs;
+    settings['wallet_amount'] = $('input#wallet_amount').val().trim();
+    settings['wallet_memo'] = $('input#wallet_memo').val().trim();
+    settings['accounts_to_send_list'] = $('textarea#accounts_to_send_list').val().trim();
+    settings['wallet_unit'] = $('select#wallet_unit').val().trim();
     chrome.storage.sync.set({ 
         steemtools: settings
     }, function() {
@@ -247,6 +260,18 @@ document.addEventListener('DOMContentLoaded', function() {
     chrome.storage.sync.get('steemtools', function(data) {
         if (data && data.steemtools) {
             let settings = data.steemtools;
+            if (settings['wallet_amount']) {
+                $('input#wallet_amount').val(settings['wallet_amount']);
+            }
+            if (settings['wallet_memo']) {
+                $('input#wallet_memo').val(settings['wallet_memo']);
+            }
+            if (settings['accounts_to_send_list']) {
+                $('textarea#accounts_to_send_list').val(settings['accounts_to_send_list']);
+            }
+            if (settings['wallet_unit']) {
+                $('select#wallet_unit').val(settings['wallet_unit']);
+            }
             if (settings["steemit_id"]) {
                 let id = prepareId(settings["steemit_id"]);
                 $('input#steemit_id').val(id);  
@@ -286,7 +311,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             }       
                         },
                         error: function(request, status, error) {
-                            logit(error);
+                            logit($('textarea#about'), error);
                         },          
                         complete: function(data) {                                                        
                         }
@@ -783,5 +808,52 @@ document.addEventListener('DOMContentLoaded', function() {
                 $('div#ping_server_result').append(msg);
             });            
         });
-    });    
+    });   
+    // wallet
+    $('button#send_money').click(function() {
+        saveSettings(false);
+        let amount = $('input#wallet_amount').val().trim();
+        let from_user = $('input#steemit_id').val().trim();
+        if (from_user == '') {
+            logit($('textarea#console_wallet'), "You need to Configure Your Steem ID.");
+            return;
+        }
+        if (isNumeric(amount)) {
+            amount = parseFloat(amount);
+            if (amount >= 0.001) { // minimal amount to send
+                let s = $('textarea#accounts_to_send_list').val().trim();
+                let addresses = s.split("\n");
+                let unit = $('select#wallet_unit').val().trim();
+                let memo = $('input#wallet_memo').val().trim();
+                unit = unit || "SBD";
+                let count = addresses.length;
+                if (s.length > 0) {
+                    if (confirm("Send " + amount.toFixed(3) + " " + unit + " to " + addresses.join(',') + " with MEMO=" + memo + "?")) {
+                        let active_key = $("input#posting_key").val().trim();                              
+                        for (let i = 0; i < count; ++ i) {
+                            let who = addresses[i].trim().replace('@', '');
+                            if (who.length > 0) {
+                                logit($('textarea#console_wallet'), "Sending " + amount.toFixed(3) + " " + unit + " to @" + who + "...");
+                                steem.api.setOptions({ url: $("select#nodes").val() });
+                                steem.broadcast.transfer(active_key, from_user, who, amount + " " + unit, memo, function(err, result) {
+                                    if (err) {
+                                        logit($('textarea#console_wallet'), err);
+                                    } else {
+                                        console.log(result);
+                                        logit($('textarea#console_wallet'), amount.toFixed(3) + " " + unit + " sent from @" + from_user + " to @" + who);
+                                    }
+                                });
+                            }
+                        }
+                    }
+                } else {
+                    logit($('textarea#console_wallet'), "Please enter recipents line by line.");    
+                }
+            } else {
+                logit($('textarea#console_wallet'), "Need at least 0.001 SBD or STEEM.");
+            }
+        } else {
+            logit($('textarea#console_wallet'), "Invalid Amount.");
+        }
+    });
 }, false);
