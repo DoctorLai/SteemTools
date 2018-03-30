@@ -23,27 +23,6 @@
     <script src="js/functions.js"></script>
     <script src="js/steemtools.js"></script>
     <script src="js/jquery-ui.js"></script>     
-    <style>
-    .ext-window {width: 770px;}
-    textarea {width: 100%;}
-    img {max-width: 100%;}
-    .chart {width: 100%; height: 570px;}
-    .vpbar {width: 100%; background-color: grey;}
-    .vp {color: white;}
-    .button {width: 110px;}
-    #delegation-form input {width:100%; max-width:100%;}    
-    textarea{
-        background: url(images/line.png);
-        background-attachment: local;
-        background-repeat: no-repeat;
-        padding-left: 35px;
-        padding-top: 10px;
-        border-color:#ccc;
-    }    
-    .console {background: black; color: yellow;}
-    #consolelog {color:white ;background:black;}    
-    div.inline-div {display: inline-block;}
-    </style>
   </head>
   <body>
     <div id="tabs" class='ext-window'>
@@ -57,7 +36,8 @@
         <li><a href="#tabs-setting">Setting</a></li>
         <li><a href="#tabs-tools">Tools</a></li>
         <li><a href="#tabs-console">Steem-Js</a></li>
-        <li><a href="#tabs-witness">Witness</a></li>
+        <li><a href="#tabs-witness">Witness Lookup</a></li>
+        <li><a href="#tabs-witness2">Your Voted Witnesses</a></li>
         <li><a href="#tabs-deleted">Deleted</a></li>
         <li><a href="#tabs-powerdown">Powerdown</a></li>
         <li><a href="#tabs-wallet">Wallet</a></li>
@@ -124,6 +104,7 @@
           <h4>Nodes</h4>
           <select id='nodes' class='form-control'>
             <option value='https://api.steemit.com'>https://api.steemit.com</option>
+            <option value='https://rpc.steemviz.com'>https://rpc.steemviz.com</option>
             <option value='https://rpc.buildteam.io'>https://rpc.buildteam.io</option>
             <option value='https://gtg.steem.house:8090'>https://gtg.steem.house:8090</option>
             <option value='https://steemd.minnowsupportproject.org'>https://steemd.minnowsupportproject.org</option>
@@ -147,6 +128,7 @@
         <p>
           <h4>Private Posting Key or Active Key</h4>
           <input type=password class='form-control' id='posting_key'>
+          <label><input type=checkbox class='form-control' id='save_key'>Save Key</label>
         </p>
         <p>
           <h4>Additional ID's (Tab General)</h4>
@@ -217,7 +199,12 @@ steem.api.getAccounts(['justyy', 'mkt'], function(err, result) {
         <p><h4>SteemId ID: </h4><input type='text' class='form-control' id='witness_id' name='witness_id' placeholder="Steem ID without @" value=''></p>
         <p><button class='form-control' style='width: 70px' id='witness_btn'>Query</button></p>
         <div id='witness_div'> </div>
-      </div>      
+      </div> 
+      <div id="tabs-witness2">
+        <p><h4>SteemId ID: </h4><input type='text' class='form-control' id='witness_id2' name='witness_id2' placeholder="Steem ID without @" value=''></p>
+        <p><button class='form-control' style='width: 70px' id='witness_btn2'>Query</button></p>
+        <div id='witness_div2'> </div>
+      </div>            
       <div id="tabs-wallet">
         <h4>Wallet</h4>
         <div id='balance_div'> </div>
@@ -237,7 +224,7 @@ steem.api.getAccounts(['justyy', 'mkt'], function(err, result) {
         </form>
       </div>                    
       <div id="tabs-log">
-        <h4>Proudly brought to you by <a target=_blank href="https://steemit.com/@justyy">@justyy</a></h4>
+        <h4>Proudly brought to you by <a target=_blank href="https://steemit.com/@justyy">@justyy</a> (<a target=_blank href='https://github.com/doctorlai/SteemTools/'>Github</a>)</h4>
         <textarea readonly class='form-control' rows=15 id='about'>           
         </textarea> 
         <BR/>

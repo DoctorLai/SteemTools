@@ -97,9 +97,8 @@ function getRep(id, dom, server) {
     steem.api.getAccounts([id], function(err, response) {
         if (!err){
             let result = formatReputation(response[0].reputation);
-            let av = steem.formatter.estimateAccountValue(response[0]);
             av.then(value => {
-                dom.html("<i>@" + id + "'s Reputation is</i> <B>" + result + "</B><br><i>@" + id + "'s Total Account Value is</i> <B>$" + value + "</B>");
+                dom.html("<i>@" + id + "'s Reputation is</i> <B>" + result + "</B>");
             });
             logit($('textarea#about'), "API Finished: Reputation/Account Value - " + id);
         } else {
@@ -222,6 +221,66 @@ function getNodeInfo(server, dom) {
     });    
 }
 
+const handleAccountWitness = () => {
+    textPressEnterButtonClick($('input#witness_id2'), $('button#witness_btn2'));
+    $('button#witness_btn2').click(function() {        
+        let id = prepareId($('input#witness_id2').val());
+        let server = getServer();        
+        server = server || default_server;
+        $('div#witness_div2').html('<img src="images/loading.gif"/>');
+        if (validId(id)) {
+            // disable the button while API is not finished yet.
+            $('button#witness_id2').attr("disabled", true);
+            $.ajax({ 
+                dataType: "json",
+                url: "https://" + server + "/api/steemit/account/witness/?cached&id="+id,
+                cache: false,
+                success: function (response) {
+                    let result = response;
+                    if (result && result.length > 0) {
+                      let s = '<h4><B>' + result.length + '</B> Witnesses (Your Votes) - <a target=_blank href="https://helloacm.com/tools/steemit/witness/?id=' + id + '">View Complete Data</a></h4>';
+                      s += '<table id="dvlist_witness2" class="sortable">';
+                      s += '<thead><tr><th>Witness</th><th>Status</th><th>Votes (MV)</th><th>Votes Count</th><th>Total Produced</th><th>Miss Rate %</th><th>Missed</th><th>Last Block</th></tr></thead><tbody>';
+                      for (let i = 0; i < result.length; i ++) {
+                            s += '<tr>';
+                            s += '<td>' + getSteemUrl(result[i]['name']) + ' <BR/>(';
+                            s += '<a rel=nofollow target=_blank href="' + result[i]['url'] + '">Post</a>)</td>';
+                            let status = "<font color='green'>Yes</font>";
+                            if (result[i]['signing_key'].includes("1111111111")) {
+                                status = "<font color='red'>No</font><BR/><a target=_blank rel=nofollow href='https://steemconnect.com/sign/account_witness_vote?approve=0&witness=" + result[i]['name'] + "'><font color=red><B>Unvote</B></font></a>";
+                            }
+                            s += '<td>' + status + ' (<a rel="nofollow" target=_blank href="https://helloacm.com/api/echo/?s=' + result[i]['signing_key'] + '" title="' + result[i]['signing_key'] + '">Signing Key</a>)</td>';
+                            s += '<td>' + Math.round(result[i]['votes']/1000000000000) + '</td>';
+                            s += '<td>' + result[i]['votes_count'] + '</td>';
+                            s += '<td>' + result[i]['total'] + '</td>';
+                            s += '<td>' + result[i]['miss_rate'].toFixed(2) + '</td>';                
+                            s += '<td>' + result[i]['total_missed'] + '</td>';
+                            s += '<td>' + result[i]['last_aslot'] + '</td>';
+                            s += '</tr>';
+                          }              
+                          s += '</tbody>';
+                          s += '</table>';
+                        $('div#witness_div2').html(s);
+                        sorttable.makeSortable(document.getElementById("dvlist_witness2"));
+                    } else {
+                        $('div#witness_div2').html("<font color=blue>It could be any of these: (1) No Voted Witnesses or You are set using Witness Proxy (2) Invalid ID (3) API/SteemSQL server failed. Contact <a rel=nofollow target=_blank href='https://steemit.com/@justyy/'>@justyy</a> if you are not sure. Thanks!</font>");
+                    }          
+                },
+                error: function(request, status, error) {
+                    $('div#witness_div2').html('<font color=red>API/SteemSQL Server (' + server + error + ') is currently offline. Please try again later!' + request.responseText + '</font>');
+                },          
+                complete: function(data) {
+                    // re-enable the button
+                    $('button#witness_btn2').attr("disabled", false);
+                }
+            });
+        } else {
+            alert('Not a Valid Steem ID.');
+            $('div#witness_div2').html('');
+        }        
+    });      
+}
+
 // save settings
 const saveSettings = (msg = true) => {
     let id = $('input#steemit_id').val().trim();
@@ -233,14 +292,18 @@ const saveSettings = (msg = true) => {
     let settings = {};
     settings['steemit_id'] = id;
     settings['server'] = server;
-    settings['friends'] = friends;
-    settings['posting_key'] = posting_key;
+    settings['friends'] = friends;    
     settings['nodes'] = nodes;
     settings['steemjs'] = steemjs;
     settings['wallet_amount'] = $('input#wallet_amount').val().trim();
     settings['wallet_memo'] = $('input#wallet_memo').val().trim();
     settings['accounts_to_send_list'] = $('textarea#accounts_to_send_list').val().trim();
     settings['wallet_unit'] = $('select#wallet_unit').val().trim();
+    let save_key = $('input#save_key').is(':checked');
+    settings['save_key'] = save_key;
+    if (save_key) {
+        settings['posting_key'] = posting_key;
+    }
     chrome.storage.sync.set({ 
         steemtools: settings
     }, function() {
@@ -287,8 +350,12 @@ document.addEventListener('DOMContentLoaded', function() {
                     $('input#powerdown_id').val(id);
                     $('input#downvoters_id').val(id);
                     $('input#witness_id').val(id);
+                    $('input#witness_id2').val(id);
                     $('a#profile').html("@" + id);
                     $('h4#profile_id').html("@" + id);
+                    if (settings['save_key'] !== null) {
+                        $('input#save_key').attr("checked", settings['save_key']);
+                    }
                     getCuration(id, $("div#profile_data"), settings['server']);
                     $.ajax({ 
                         dataType: "json",
@@ -343,7 +410,9 @@ document.addEventListener('DOMContentLoaded', function() {
             $('select#server').val(settings['server']);
             getServerInfo(settings['server'], $('div#serverinfo'));
             getServerInfo_sbds(settings['server'], $('div#serverinfo_sbds'));
-            $('input#posting_key').val(settings['posting_key']);   
+            if ($('input#save_key').is(":checked")) {
+                $('input#posting_key').val(settings['posting_key']);
+            }
             // steemjs source
             let steemjs = settings['steemjs'];
             if (steemjs) {
@@ -469,7 +538,10 @@ document.addEventListener('DOMContentLoaded', function() {
             alert('Not a Valid Steem ID.');
             $('div#downvoters_div').html('');
         }        
-    });      
+    });   
+    // find account witness information
+    // search a id when press Enter
+    handleAccountWitness();      
     // find witness information
     // search a id when press Enter
     textPressEnterButtonClick($('input#witness_id'), $('button#witness_btn'));

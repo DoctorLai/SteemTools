@@ -110,3 +110,21 @@ table.sortable tbody tr:nth-child(2n+1) td {
 table.sortable th:not(.sorttable_sorted):not(.sorttable_sorted_reverse):not(.sorttable_nosort):after { 
     content: " \25B4\25BE" 
 }
+.ext-window {width: 770px;}
+textarea {width: 100%;}
+img {max-width: 100%;}
+.chart {width: 100%; height: 570px;}
+.vpbar {width: 100%; background-color: grey;}
+.vp {color: white;}
+.button {width: 110px;}
+#delegation-form input {width:100%; max-width:100%;}    
+textarea{
+    background-attachment: local;
+    background-repeat: no-repeat;
+    padding-left: 35px;
+    padding-top: 10px;
+    border-color:#ccc;
+}    
+.console {background: black; color: yellow;}
+#consolelog {color:white ;background:black;}    
+div.inline-div {display: inline-block;}
