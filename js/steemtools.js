@@ -97,9 +97,7 @@ function getRep(id, dom, server) {
     steem.api.getAccounts([id], function(err, response) {
         if (!err){
             let result = formatReputation(response[0].reputation);
-            av.then(value => {
-                dom.html("<i>@" + id + "'s Reputation is</i> <B>" + result + "</B>");
-            });
+            dom.html("<i>@" + id + "'s Reputation is</i> <B>" + result + "</B>");
             logit($('textarea#about'), "API Finished: Reputation/Account Value - " + id);
         } else {
             logit($('textarea#about'), "API error: " + id + ": " + err);
@@ -281,6 +279,126 @@ const handleAccountWitness = () => {
     });      
 }
 
+// profile API
+const handleProfile = (dom, input, btn) => {
+    textPressEnterButtonClick(input, btn);
+    let server = getServer();        
+    server = server || default_server;
+    let id = prepareId($(input).val());
+    dom.html('<img src="images/loading.gif"/>');
+    btn.attr("disabled", true);
+    $.ajax({ 
+        dataType: "json",
+        url: "https://" + server + "/api/steemit/account/profile/?cached&id=" + id,
+        cache: false,
+        error: function(request, status, error) {
+            dom.html('<font color=red>API/SteemSQL Server (' + server + error + ') is currently offline. Please try again later!' + request.responseText + '</font>');
+        },          
+        complete: function(data) {
+            // re-enable the button
+            btn.attr("disabled", false);
+        },
+        success: function (response) {
+            let result = response;
+            if (result) {
+                let s = '';
+                s += '<table>';
+                s += '<thead><tr><th style="width:30%">Key</th><th>Value</th></tr></thead><tbody>';
+
+                const addKeyValue = (result, x) => {
+                    return "<tr><td>" + x + "</td><td>" + result[x] + "</td></tr>";
+                }
+
+                s += addKeyValue(result, "id");
+                s += addKeyValue(result, "created");
+                s += addKeyValue(result, "last_vote_time");
+                s += addKeyValue(result, "steem");
+                s += addKeyValue(result, "rep");
+                s += addKeyValue(result, "online");
+                s += addKeyValue(result, "vests");
+                s += addKeyValue(result, "sbd");
+                s += addKeyValue(result, "value");
+                s += addKeyValue(result, "vp");
+                s += "<tr><td>received_sp</td><td>" + result['esp']['received_sp'] + "</td></tr>";
+                s += "<tr><td>delegated_vesting_shares</td><td>" + result['esp']['delegated_vesting_shares'] + "</td></tr>";
+                s += "<tr><td>effective_vesting_shares</td><td>" + result['esp']['effective_vesting_shares'] + "</td></tr>";
+                s += "<tr><td>vesting_shares</td><td>" + result['esp']['vesting_shares'] + "</td></tr>";
+                s += "<tr><td>received_vesting_shares</td><td>" + result['esp']['received_vesting_shares'] + "</td></tr>";
+                s += "<tr><td>vesting_sp</td><td>" + result['esp']['vesting_sp'] + "</td></tr>";
+                s += "<tr><td>esp</td><td>" + result['esp']['esp'] + "</td></tr>";
+                s += "<tr><td>delegated_sp</td><td>" + result['esp']['delegated_sp'] + "</td></tr>";
+                s += '</tbody>';
+                s += '</table>';
+                dom.html(s);                          
+            } else {
+                dom.html('');
+            }      
+        }           
+    });
+}
+
+// steem blockchain information
+const getInfor = (dom) => {
+    let server = getServer();        
+    server = server || default_server;
+    dom.html('<img src="images/loading.gif"/>');
+    $.ajax({ 
+        dataType: "json",
+        url: "https://" + server + "/api/steemit/info/",
+        cache: false,
+        success: function (response) {
+            let result = response;
+            if (result) {
+                let s = '';
+                s += '<table>';
+                s += '<thead><tr><th style="width:30%">Key</th><th>Value</th></tr></thead><tbody>';
+
+                const addKeyValue = (result, x) => {
+                    return "<tr><td>" + x + "</td><td>" + result[x] + "</td></tr>";
+                }
+
+                s += addKeyValue(result, "account_num");
+                s += addKeyValue(result, "time");
+                s += addKeyValue(result, "last_irreversible_block_num");
+                s += addKeyValue(result, "head_block_number");
+                s += addKeyValue(result, "hardfork_version");
+                s += addKeyValue(result, "market_price");
+                s += addKeyValue(result, "feed_price");
+                s += "<tr><td>blockchain_version</td><td>" + result['version']['blockchain_version'] + "</td></tr>";
+                s += "<tr><td>steem_revision</td><td>" + result['version']['steem_revision'] + "</td></tr>";
+                s += "<tr><td>fc_revision</td><td>" + result['version']['fc_revision'] + "</td></tr>";
+                s += '</tbody>';
+                s += '</table>';
+                dom.html(s);                          
+            } else {
+                dom.html('');
+            }      
+        }           
+    });
+}
+
+// handle delegation form
+const handleDelegationForm = () => {
+    $('input#delegate_btn').click(function() {
+        let delegator = $("input#delegator").val().toLowerCase().trim();
+        let delegatee = $("input#delegatee").val().toLowerCase().trim();
+        let amount = $("input#amount").val().trim();
+        let unit = $("#unit").val().trim();
+        if (delegatee == '') {
+            alert('Required Field: Delegatee ID');
+            $("input#delegatee").focus();
+            return;
+        }
+        if (amount == '') {
+            alert('Required: Amount to Delegate');
+            $("input#amount").focus();
+            return;
+        }      
+        let steemconnect = "https://v2.steemconnect.com/sign/delegateVestingShares?delegator=" + delegator + "&delegatee=" + delegatee + "&vesting_shares=" + amount + " " + unit; 
+        chrome.tabs.create({ url: steemconnect });        
+    });     
+}
+
 // save settings
 const saveSettings = (msg = true) => {
     let id = $('input#steemit_id').val().trim();
@@ -351,6 +469,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     $('input#downvoters_id').val(id);
                     $('input#witness_id').val(id);
                     $('input#witness_id2').val(id);
+                    $('input#account_id').val(id);
                     $('a#profile').html("@" + id);
                     $('h4#profile_id').html("@" + id);
                     if (settings['save_key'] !== null) {
@@ -570,6 +689,8 @@ document.addEventListener('DOMContentLoaded', function() {
                         }
 
                         s += addKeyValue(result, "total_missed");
+                        s += addKeyValue(result, "total");
+                        s += addKeyValue(result, "miss_rate");
                         s += addKeyValue(result, "last_confirmed_block_num");
                         s += addKeyValue(result, "running_version");
                         s += "<tr><td>witness_post</td><td><a target=_blank href='" + result[0]['url'] + "'>" + result[0]['url'] + "</a></td></tr>";
@@ -611,24 +732,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }        
     });     
     // delegation form
-    $('input#delegate_btn').click(function() {
-        let delegator = $("input#delegator").val().toLowerCase().trim();
-        let delegatee = $("input#delegatee").val().toLowerCase().trim();
-        let amount = $("input#amount").val().trim();
-        let unit = $("#unit").val().trim();
-        if (delegatee == '') {
-            alert('Required Field: Delegatee ID');
-            $("input#delegatee").focus();
-            return;
-        }
-        if (amount == '') {
-            alert('Required: Amount to Delegate');
-            $("input#amount").focus();
-            return;
-        }      
-        let steemconnect = "https://v2.steemconnect.com/sign/delegateVestingShares?delegator=" + delegator + "&delegatee=" + delegatee + "&vesting_shares=" + amount + " " + unit; 
-        chrome.tabs.create({ url: steemconnect });        
-    });  
+    handleDelegationForm(); 
     // find a list of deleted comments
     // search a id when press Enter
     textPressEnterButtonClick($('input#deleted_id'), $('button#deleted_btn'));
@@ -928,4 +1032,12 @@ document.addEventListener('DOMContentLoaded', function() {
             logit($('textarea#console_wallet'), "Invalid Amount.");
         }
     });
+    // get information
+    getInfor($('div#info_div'));
+    // profile
+    let input = $('input#account_id');
+    let btn = $('button#btn_profile');
+    btn.click(function() {
+        handleProfile($('div#profile_result'), input, btn);
+    });    
 }, false);

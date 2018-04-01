@@ -28,7 +28,7 @@
     <div id="tabs" class='ext-window'>
       <ul>
         <li><a href="#tabs-general">General</a></li>
-        <li><a href="#tabs-profile">Profile</a></li>
+        <li><a href="#tabs-profile">Data</a></li>
         <li><a href="#tabs-delegate-form">Delegate</a></li>
         <li><a href="#tabs-delegatees">Delegatees</a></li>
         <li><a href="#tabs-delegators">Delegators</a></li>
@@ -58,6 +58,7 @@
         <h3 id='profile_id'></h3>
         <div id='profile_data'> </div>
         <div id='powerdown_data'> </div>
+        <div id="info_div"> </div>
       </div>             
       <div id="tabs-delegate-form">
         <h3>SteemIt SP Delegation Tool</h3>
@@ -137,6 +138,10 @@
         <p><button class='form-control' style='width: 70px' id='save_btn'>Save</button></p>
       </div>
       <div id="tabs-tools">    
+        <h4>Account Profile Lookup</h4>
+        <p><input type='text' class='form-control' id='account_id' placeholder="Enter SteemIt Account ID without @" value=''></p>
+        <p><button class='form-control' style='width: 110px' id='btn_profile'>Lookup</button></p>     
+        <div id='profile_result'> </div>
         <h4>Reputation Calculator</h4>
         <p><input type='number' class='form-control' id='steemit_reputation' name='steemit_reputation' placeholder="Raw Reputation Value" value=''></p>
         <p><button class='form-control' style='width: 110px' id='btn_rep'>Calculate</button></p>
