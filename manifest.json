@@ -3,7 +3,7 @@
   "name": "Steem Tools",
   "short_name": "steemtools",  
   "default_locale": "en",
-  "version": "0.0.11.1",
+  "version": "0.0.12",
   "browser_action": {
      "default_icon": "icon.png",
      "default_title": "Steem Tools",
@@ -25,7 +25,10 @@
   		"bs/*"
   ],
   "background": {
-    "scripts": ["js/background.js"]
+    "scripts": [
+        "js/background.js", 
+        "js/context.js"
+    ]
   },  
   "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'",
   "content_scripts": [{
@@ -40,6 +43,7 @@
      "activeTab",
      "storage",
      "tabs",
+     "contextMenus",
      "<all_urls>"
   ]
 }
