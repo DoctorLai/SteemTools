@@ -22,8 +22,11 @@
     <link rel="stylesheet" href="css/custom.css" />
     <script src="js/ping.js"></script>   
     <script src="js/functions.js"></script>
-    <script src="js/steemtools.js"></script>
-    <script src="js/jquery-ui.js"></script>     
+    <script src="js/steemtools.js"></script>    
+    <script src="js/jquery-ui.js"></script> 
+    <style>
+      .banner { height: 75px; } 
+    </style>    
   </head>
   <body>
     <div id="tabs" class='ext-window'>
@@ -123,6 +126,10 @@
             <option value='https://steemd.privex.io'>https://steemd.privex.io</option>
             <option value='https://steemd.steemitdev.com'>https://steemd.steemitdev.com</option>
             <option value='https://steemd.steemitstage.com'>https://steemd.steemitstage.com</option>
+            <option value='https://steemd.steemgigs.org'>https://steemd.steemgigs.org</option>
+            <option value='https://appbasetest.timcliff.com'>https://appbasetest.timcliff.com</option>
+            <option value='https://rpc.curiesteem.com'>https://rpc.curiesteem.com</option>
+            <option value='https://api.steem.house'>https://api.steem.house</option>
           </select>
         </p>
         <p>
@@ -168,11 +175,11 @@
         <div class=console id='ping_server_result'> </div>                 
       </div>   
       <div id="tabs-console">    
-        <h4>steem-js console</h4>
+        <h4>Steem-Js Console (<a target=_blank href='https://helloacm.com/tools/steemit/steemjs/'><u><B>Full Screen</B></u></a>)</h4>
         <form class='form-inline'>
         <p>
           <div id='consolelog'> </div>
-          <textarea class="lined" id='steemjs-source' style='width:100%' rows=15>
+<textarea class="lined" id='steemjs-source' style='width:100%;' rows=15>
 // Press Alt + Enter to Evaluate
 // Press Alt + Backspace to Clear Consolee
 
@@ -187,7 +194,7 @@ steem.api.getAccounts(['justyy', 'mkt'], function(err, result) {
     console.log("Steem API Error: ", err);
   }
 });            
-          </textarea>          
+</textarea>          
         </p>
         <p>
           <input type='button' class='form-control' class=button id='btn_run' value='Run'>
@@ -243,8 +250,11 @@ steem.api.getAccounts(['justyy', 'mkt'], function(err, result) {
         <textarea readonly class='form-control' rows=15 id='about'>           
         </textarea> 
         <BR/>
-        <a target=_blank href='https://www.paypal.me/doctorlai/3'><img src='images/paypal.png' style='height: 70px'></a> &nbsp;
-        <a target=_blank href='https://justyy.com/out/bitcoin'><img src='images/bitcoin.jpg' style='height: 70px'></a>                
+        <a target=_blank href='https://www.paypal.me/doctorlai/3'><img src='images/paypal.png' class='banner'></a> &nbsp;
+        <a target=_blank href='https://justyy.com/out/bitcoin'><img src='images/bitcoin.jpg' class='banner'></a>
+        <a target=_blank href='https://justyy.com/out/vultr2'><img title='Free $10 VPS' src='images/vultr.jpg' class='banner'></a>
+        &nbsp;
+        <a target=_blank href='https://justyy.com/out/linode'><img title='Free $20 VPS' src='images/linode.jpg' class='banner'></a>                       
       </div>            
     </div>
   </body>
