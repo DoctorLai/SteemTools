@@ -3,7 +3,7 @@
   "name": "Steem Tools",
   "short_name": "steemtools",  
   "default_locale": "en",
-  "version": "0.0.12",
+  "version": "0.0.13",
   "browser_action": {
      "default_icon": "icon.png",
      "default_title": "Steem Tools",
@@ -24,20 +24,19 @@
       "css/*",
   		"bs/*"
   ],
+  "content_security_policy": "connect-src https://*; script-src 'self' 'unsafe-eval'; object-src 'self'",
   "background": {
     "scripts": [
         "js/background.js", 
         "js/context.js"
     ]
   },  
-  "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'",
   "content_scripts": [{
       "matches": ["<all_urls>"],
       "js":[
-          "js/jquery-3.2.1.min.js",
           "js/content.js"
       ],
-      "run_at":"document_start"
+      "run_at":"document_idle"
   }],
   "permissions": [
      "activeTab",
