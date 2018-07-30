@@ -5,15 +5,19 @@ chrome.contextMenus.removeAll();
 // all supported steem domains
 let steem_websites = [
 	"steemit.com",
+	"staging.busy.org",
 	"busy.org",
 	"steemd.com",
+	"steemdb.com",
+	"steemhunt.com",
+	"mspsteem.com",
 	"utopian.io"
 ];
 
 // create parent context menu item
 let parent = chrome.contextMenus.create({
 	title: "SteemTools - Switch To",
-	contexts: ['all']
+	contexts: ["page", "frame"]
 });
 
 // switch to click and sub menus
@@ -34,6 +38,9 @@ for (let i = 0; i < sz; ++ i) {
 						url = url.replace(domain, cur_domain);
 						chrome.tabs.update(info.tab, {"url": url});
 					}
+				} else {
+					// switch to
+					chrome.tabs.update(info.tab, {"url": "https://" + cur_domain});
 				}
 			}
 		}	
