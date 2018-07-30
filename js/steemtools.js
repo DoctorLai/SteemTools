@@ -49,6 +49,16 @@ const getTopWitnesses = (dom, server) => {
     });
 }
 
+// estimate the time required to become 100% VP
+const fullVPIn = (vp) => {
+    let regen_per_second = 20 / 86400;
+    let amount = 100 - vp;
+    let ms = (amount / regen_per_second) / 60;
+    let hours = Math.floor(ms / 60);
+    ms = Math.round(ms - hours * 60);
+    return " Full in <B>" + hours.toFixed(0) + "</B> hours, <B>" + ms + "</B> mins";
+}
+
 // get voting power
 function getVP(id, dom, server) {
     server = server || default_node;
@@ -62,7 +72,7 @@ function getVP(id, dom, server) {
             let regenerated_vp = diff * 10000 / 86400 / 5;
             let total_vp = (result + regenerated_vp) / 100;
             total_vp = Math.min(100, total_vp);
-            dom.html("<i>@" + id + "'s Voting Power is</i> <B>" + total_vp.toFixed(2) + "%</B>");
+            dom.html("<i>@" + id + "'s Voting Power is</i> <B>" + total_vp.toFixed(2) + "%</B>, <I>" + fullVPIn(total_vp) + "</I>");
             if (result < 30) {
                 dom.css("background-color", "red");
             } else if (result < 60) {
