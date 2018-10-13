@@ -154,34 +154,6 @@ const getAccountValue = (id, dom, server) => {
     });    
 }
 
-// get api server infor
-function getServerInfo_sbds(server, dom) {
-    server = server || default_server;
-    let api = 'https://' + server + '/api/steemit/blocknumber/sbds';
-    logit($('textarea#about'), "calling " + api);
-    $.ajax({
-        type: "GET",
-        url: api,
-        success: function(result) {
-            let s = "<ul>";
-            s += "<li><B>Server: </B>" + server + "</li>";
-            s += "<li><B>SBDS Block Number: </B><a target=_blank href='https://steemdb.com/block/" + result['block_num'] + "'>" + result['block_num'] + "</a></li>";
-            s += "<li><B>Timestamp: </B>" + result['timestamp'] + "</li>";
-            s += "<li><B>Gap: </B>" + result['seconds'] + " seconds</li>";
-            s += "</ul>";
-            dom.html(s);
-        },
-        error: function(request, status, error) {
-            logit($('textarea#about'), 'Response: ' + request.responseText);
-            logit($('textarea#about'), 'Error: ' + error );
-            logit($('textarea#about'), 'Status: ' + status);
-        },
-        complete: function(data) {
-            logit($('textarea#about'), "API Finished: " + api);
-        }             
-    });      
-}
-
 // handle Your Downvotes Tab
 const getYourDownvotes = () => {
     // check who downvoted you
@@ -618,7 +590,6 @@ document.addEventListener('DOMContentLoaded', function() {
             // get server api blocknumber    
             $('select#server').val(settings['server']);
             getServerInfo(settings['server'], $('div#serverinfo'));
-            getServerInfo_sbds(settings['server'], $('div#serverinfo_sbds'));
             if ($('input#save_key').is(":checked")) {
                 $('input#posting_key').val(settings['posting_key']);
             }
@@ -634,7 +605,6 @@ document.addEventListener('DOMContentLoaded', function() {
             // get server api blocknumber    
             $('select#server').val(default_server);
             getServerInfo(default_server, $('div#serverinfo'));            
-            getServerInfo_sbds(default_server, $('div#serverinfo_sbds'));
         }
     });
     $('button#save_btn').click(function() {
