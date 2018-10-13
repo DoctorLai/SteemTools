@@ -72,7 +72,15 @@ function getVP(id, dom, server) {
             let regenerated_vp = diff * 10000 / 86400 / 5;
             let total_vp = (result + regenerated_vp) / 100;
             total_vp = Math.min(100, total_vp);
-            dom.html("<i>@" + id + "'s Voting Power is</i> <B>" + total_vp.toFixed(2) + "%</B>, <I>" + fullVPIn(total_vp) + "</I>");
+            // get the Steem Blockchain HF20 Voting Mana Update
+            let mana = response[0].voting_manabar;
+            let s = "<BR/>Mana: " + mana.current_mana;
+            let total_mana = mana.current_mana/(total_vp/100);
+            s += " / " + (total_mana).toFixed(0);
+            // last mana update time (how many seconds ago)
+            let seconds = (Date.now() / 1000 - mana.last_update_time);
+            s += " Updated: " + (seconds).toFixed(0) + " seconds ago.";
+            dom.html("<i>@" + id + "'s Voting Power is</i> <B>" + total_vp.toFixed(2) + "%</B>, <I>" + fullVPIn(total_vp) + "</I>" + s);
             if (result < 30) {
                 dom.css("background-color", "red");
             } else if (result < 60) {
@@ -152,34 +160,6 @@ const getAccountValue = (id, dom, server) => {
             logit($('textarea#about'), "getAccountValue Error: " + err);
         }
     });    
-}
-
-// get api server infor
-function getServerInfo_sbds(server, dom) {
-    server = server || default_server;
-    let api = 'https://' + server + '/api/steemit/blocknumber/sbds';
-    logit($('textarea#about'), "calling " + api);
-    $.ajax({
-        type: "GET",
-        url: api,
-        success: function(result) {
-            let s = "<ul>";
-            s += "<li><B>Server: </B>" + server + "</li>";
-            s += "<li><B>SBDS Block Number: </B><a target=_blank href='https://steemdb.com/block/" + result['block_num'] + "'>" + result['block_num'] + "</a></li>";
-            s += "<li><B>Timestamp: </B>" + result['timestamp'] + "</li>";
-            s += "<li><B>Gap: </B>" + result['seconds'] + " seconds</li>";
-            s += "</ul>";
-            dom.html(s);
-        },
-        error: function(request, status, error) {
-            logit($('textarea#about'), 'Response: ' + request.responseText);
-            logit($('textarea#about'), 'Error: ' + error );
-            logit($('textarea#about'), 'Status: ' + status);
-        },
-        complete: function(data) {
-            logit($('textarea#about'), "API Finished: " + api);
-        }             
-    });      
 }
 
 // handle Your Downvotes Tab
@@ -618,7 +598,6 @@ document.addEventListener('DOMContentLoaded', function() {
             // get server api blocknumber    
             $('select#server').val(settings['server']);
             getServerInfo(settings['server'], $('div#serverinfo'));
-            getServerInfo_sbds(settings['server'], $('div#serverinfo_sbds'));
             if ($('input#save_key').is(":checked")) {
                 $('input#posting_key').val(settings['posting_key']);
             }
@@ -634,7 +613,6 @@ document.addEventListener('DOMContentLoaded', function() {
             // get server api blocknumber    
             $('select#server').val(default_server);
             getServerInfo(default_server, $('div#serverinfo'));            
-            getServerInfo_sbds(default_server, $('div#serverinfo_sbds'));
         }
     });
     $('button#save_btn').click(function() {
