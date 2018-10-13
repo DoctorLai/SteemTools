@@ -72,7 +72,15 @@ function getVP(id, dom, server) {
             let regenerated_vp = diff * 10000 / 86400 / 5;
             let total_vp = (result + regenerated_vp) / 100;
             total_vp = Math.min(100, total_vp);
-            dom.html("<i>@" + id + "'s Voting Power is</i> <B>" + total_vp.toFixed(2) + "%</B>, <I>" + fullVPIn(total_vp) + "</I>");
+            // get the Steem Blockchain HF20 Voting Mana Update
+            let mana = response[0].voting_manabar;
+            let s = "<BR/>Mana: " + mana.current_mana;
+            let total_mana = mana.current_mana/(total_vp/100);
+            s += " / " + (total_mana).toFixed(0);
+            // last mana update time (how many seconds ago)
+            let seconds = (Date.now() / 1000 - mana.last_update_time);
+            s += " Updated: " + (seconds).toFixed(0) + " seconds ago.";
+            dom.html("<i>@" + id + "'s Voting Power is</i> <B>" + total_vp.toFixed(2) + "%</B>, <I>" + fullVPIn(total_vp) + "</I>" + s);
             if (result < 30) {
                 dom.css("background-color", "red");
             } else if (result < 60) {
