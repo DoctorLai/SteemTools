@@ -50,7 +50,7 @@ function json(response) {
 let url = document.location.href;
 if (is_steem_domain(url)) {
 	let pat = /https?:\/\/(.*)\/@(.*)\/(.*)/g.exec(url);
-	if (pat[2] && pat[3]) {
+	if (pat && pat[2] && pat[3]) {
 		let id = pat[2];
 		let permlink = pat[3];
 		if (id && permlink) {

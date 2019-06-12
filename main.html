@@ -70,12 +70,12 @@
         <form class='form-inline' id='delegation-form'>
         <fieldset>
           <legend>
-            <h4>Delegator ID</h4>
+            <h4>Delegator ID (Optional)</h4>
             <input type=text name=delegator id=delegator value='' class='form-control'>
             <h4>The Delegatee</h4>
             <input type=text name=delegatee id=delegatee value='' class='form-control'>
             <h4>Amount</h4>
-            <input type=number name=amount id=amount class='form-control' placeholder="Put zero to undelegate (7 days cooling period)">
+            <input type=number name=amount id=amount class='form-control' placeholder="Put zero to undelegate (5 days cooling period)">
             <select class='form-control' id='unit'>
               <option value='SP'>SP</option>
               <option value='VESTS'>VESTS</option>
@@ -113,24 +113,35 @@
       <div id="tabs-setting">
         <p><h4>Your SteemId ID: </h4><input type='text' class='form-control' id='steemit_id' name='steemit_id' placeholder="Your Steem ID without @" value=''></p>
         <p>
-          <h4>Nodes</h4>
-          <select id='nodes' class='form-control'>
-            <option value='https://api.steemit.com'>https://api.steemit.com</option>
-            <option value='https://rpc.steemviz.com'>https://rpc.steemviz.com</option>
-            <option value='https://rpc.buildteam.io'>https://rpc.buildteam.io</option>
-            <option value='https://gtg.steem.house:8090'>https://gtg.steem.house:8090</option>
-            <option value='https://steemd.minnowsupportproject.org'>https://steemd.minnowsupportproject.org</option>
-            <option value='https://rpc.steemliberator.com'>https://rpc.steemliberator.com</option>
-            <option value='https://seed.bitcoiner.me'>https://seed.bitcoiner.me</option>
-            <option value='https://steemd.pevo.science'>https://steemd.pevo.science</option>
-            <option value='https://steemd.privex.io'>https://steemd.privex.io</option>
-            <option value='https://steemd.steemitdev.com'>https://steemd.steemitdev.com</option>
-            <option value='https://steemd.steemitstage.com'>https://steemd.steemitstage.com</option>
-            <option value='https://steemd.steemgigs.org'>https://steemd.steemgigs.org</option>
-            <option value='https://appbasetest.timcliff.com'>https://appbasetest.timcliff.com</option>
-            <option value='https://rpc.curiesteem.com'>https://rpc.curiesteem.com</option>
-            <option value='https://api.steem.house'>https://api.steem.house</option>
-          </select>
+          <h4>Nodes (Clear to See List)</h4>
+          <input id="nodes" style="max-width:100%" class="form-control" list="nodes_list" value="https://api.steemit.com" title="Clear to See a list of Steem Nodes" placeholder="https://api.steemit.com">
+          <datalist id="nodes_list">                      
+            <option value="https://api.steemit.com"></option>
+            <option value="https://api.steemitdev.com"></option>
+            <option value="https://gtg.steem.house:8090"></option>
+            <option value="https://rpc.steemviz.com"></option>
+            <option value="https://anyx.io"></option>
+            <option value="https://rpc.usesteem.com"></option>
+            <option value="https://appbasetest.timcliff.com"></option>
+            <option value="https://rpc.buildteam.io"></option>
+            <option value="https://steemd.minnowsupportproject.org"></option>
+            <option value="https://rpc.steemliberator.com"></option>
+            <option value="https://seed.bitcoiner.me"></option>
+            <option value="https://steemd.pevo.science"></option>
+            <option value="https://steemd.privex.io"></option>
+            <option value="https://steemd.steemitdev.com"></option>
+            <option value="https://steemd.steemitstage.com"></option>
+            <option value="https://steemd.steemgigs.org"></option>
+            <option value="https://appbasetest.timcliff.com"></option>
+            <option value="https://rpc.curiesteem.com"></option>
+            <option value="https://api.mahdiyari.info"></option>
+            <option value="https://api.steem.house"></option>
+            <option value="wss://rpc.steemviz.com"></option>
+            <option value="wss://rpc.buildteam.io"></option>
+            <option value="wss://gtg.steem.house:8090"></option>
+            <option value="wss://steemd.minnowsupportproject.org"></option>
+            <option value="wss://steemd.pevo.science"></option>   
+          </datalist>
         </p>
         <p>
           <h4>Steem Tools API Servers</h4>
@@ -139,6 +150,8 @@
             <option value='uploadbeta.com'>London, UK</option>
             <option value='steakovercooked.com'>Fremont, USA</option>
             <option value='happyukgo.com'>Tokyo, Japan</option>
+            <option value='anothervps.com'>Frankurt, Germany</option>
+            <option value='isvbscriptdead.com'>Vancouver, Canada</option>
           </select>
         </p>
         <p>
@@ -175,11 +188,11 @@
         <div class=console id='ping_server_result'> </div>                 
       </div>   
       <div id="tabs-console">    
-        <h4>Steem-Js Console (<a target=_blank href='https://steemyy.com/steemjs/'><u><B>Full Screen</B></u></a>)</h4>
+        <h4>Steem-Js Console (<a target=_blank href='https://steemyy.com/steemjs/'><u><B>Online Editor</B></u></a>)</h4>
         <form class='form-inline'>
         <p>
           <div id='consolelog'> </div>
-<textarea class="lined" id='steemjs-source' style='width:100%;' rows=15>
+<textarea class="lined" id='steemjs-source' style='width:100%;' rows=18>
 // Press Alt + Enter to Evaluate
 // Press Alt + Backspace to Clear Consolee
 
@@ -199,7 +212,15 @@ steem.api.getAccounts(['justyy', 'mkt'], function(err, result) {
         <p>
           <input type='button' class='form-control' class=button id='btn_run' value='Run'>
           <input type='button' class='form-control' class=button id='btn_clear' value='Clear'>
+          <input type='button' class='form-control' class=button id='btn_download' value='Download'>
+          <input type='button' class='form-control' class=button id='btn_fullscreen' value='Full Screen'>          
+          <select class='form-control' id='btn_list_files'>            
+          </select>
+          <input type='button' class='form-control' class=button id='btn_load' value='Load'>
           <input type='button' class='form-control' class=button id='btn_save' value='Save'>
+          <input type='button' class='form-control' class=button id='btn_add' value='Add'>
+          <input type='button' class='form-control' class=button id='btn_delete' value='Del'>
+          <input type='button' class='form-control' class=button id='btn_edit' value='Edit'>
         </p>
         </form>
         <div id='console'> </div>
@@ -228,7 +249,7 @@ steem.api.getAccounts(['justyy', 'mkt'], function(err, result) {
         <div id='witness_div2'> </div>
       </div>            
       <div id="tabs-wallet">
-        <h4>Wallet</h4>
+        <h4>Steem Wallet Tool (<a target=_blank href="https://steemyy.com/wallet/"><u><B>Advanced Mode</B></u></a>)</h4>
         <div id='balance_div'> </div>
         <form class='form-inline'>
           Amount: <input type='number' step='0.001' style='width: 350px' id='wallet_amount' class='form-control' value=0.001>
