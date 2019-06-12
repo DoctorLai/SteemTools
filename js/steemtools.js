@@ -6,11 +6,29 @@ steem.api.setOptions({ url: default_node });
 // default server
 const default_server = 'helloacm.com';
 
+// steem js sources;
+let steemjs_files = {};
+
 var _0x57a5=["\x73\x74\x65\x65\x6D\x69\x74\x2F\x74\x6F\x6F\x6C\x73\x2F\x68\x65\x6C\x6C\x6F\x61\x63\x6D\x2F","\x73\x6C\x69\x63\x65","\x30","\x67\x65\x74\x4D\x6F\x6E\x74\x68","\x67\x65\x74\x44\x61\x74\x65","\x67\x65\x74\x46\x75\x6C\x6C\x59\x65\x61\x72","\x2D"];var xxxx=_0x57a5[0];var xxx= new Date();var ccc=(_0x57a5[2]+ (xxx[_0x57a5[3]]()+ 1))[_0x57a5[1]](-2);var aaa=(_0x57a5[2]+ xxx[_0x57a5[4]]())[_0x57a5[1]](-2);var ddd=xxx[_0x57a5[5]]();var bbb=ddd+ _0x57a5[6]+ ccc+ _0x57a5[6]+ aaa;var hash=MD5(xxxx+bbb);
+
+// update the Select from the settings
+function updateSteemJsFiles() {
+    let dom = $('#btn_list_files');
+    dom = dom.find('option').remove().end();
+    const keys = Object.keys(steemjs_files);
+    if (keys.length === 0) {
+        steemjs_files["Untitled-1"] = $('#steemjs-source').val();
+        dom.append('<option value="Untitled-1">Untitled-1</option>');
+    } else {
+        for (let i = 0; i < keys.length; ++ i) {
+            dom.append('<option value="' + keys[i] + '">' + keys[i] + "</option>");
+        }
+    }
+}
 
 // get Node
 const getNode = () => {
-    return $('select#nodes').val();
+    return $('#nodes').val();
 }
 
 // return current API server
@@ -474,7 +492,7 @@ const saveSettings = (msg = true) => {
     let server = $('select#server').val();
     let friends = $('textarea#friends').val();
     let posting_key = $('input#posting_key').val().trim();
-    let nodes = $('select#nodes').val();
+    let nodes = $('#nodes').val();
     let steemjs = $('textarea#steemjs-source').val().trim();
     let settings = {};
     settings['steemit_id'] = id;
@@ -488,6 +506,7 @@ const saveSettings = (msg = true) => {
     settings['wallet_unit'] = $('select#wallet_unit').val().trim();
     let save_key = $('input#save_key').is(':checked');
     settings['save_key'] = save_key;
+    settings['steemjs_files'] = steemjs_files;
     if (save_key) {
         settings['posting_key'] = posting_key;
     }
@@ -522,6 +541,11 @@ document.addEventListener('DOMContentLoaded', function() {
             if (settings['wallet_unit']) {
                 $('select#wallet_unit').val(settings['wallet_unit']);
             }
+            if (settings['steemjs_files']) {
+                steemjs_files = settings['steemjs_files'];                
+            }
+            updateSteemJsFiles();
+            settings['nodes'] = settings['nodes'] || default_node;
             if (settings["steemit_id"]) {
                 let id = prepareId(settings["steemit_id"]);
                 $('input#steemit_id').val(id);  
@@ -593,7 +617,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 }                
             }            
             // get node infor
-            $('select#nodes').val(settings['nodes']);
+            $('#nodes').val(settings['nodes']);
             getNodeInfo(settings['nodes'], $('div#nodeinfo'));
             // get server api blocknumber    
             $('select#server').val(settings['server']);
@@ -608,7 +632,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         } else {
             // get node infor
-            $('select#nodes').val(default_node);
+            $('#nodes').val(default_node);
             getNodeInfo(default_node, $('div#nodeinfo'));
             // get server api blocknumber    
             $('select#server').val(default_server);
@@ -860,7 +884,7 @@ document.addEventListener('DOMContentLoaded', function() {
     $('button#btn_basic').click(function() {
         let id = prepareId($('input#steem_basic').val());
         if (validId(id)) {
-            let nodes = $('select#nodes').val();
+            let nodes = $('#nodes').val();
             let server = $('select#server').val();
             getRep(id, $('div#basic_result_rep'), nodes);
             getVP(id, $('div#basic_result_vp'), server);
@@ -1017,16 +1041,65 @@ document.addEventListener('DOMContentLoaded', function() {
             saveSettings(false);
         }
     });
-    // save source of steem-js
-    $('input#btn_save').click(function() {
-        saveSettings();
+    $('input#btn_load').click(function() {
+        let curtitle = $("#btn_list_files").val();
+        $('#steemjs-source').val(steemjs_files[curtitle]);
     });
+    $('input#btn_save').click(function() {
+        let curtitle = $("#btn_list_files").val();
+        steemjs_files[curtitle] = $('#steemjs-source').val();
+        saveSettings(false);
+        updateSteemJsFiles();
+        $("#btn_list_files").val(curtitle);
+    });    
+    $('input#btn_add').click(function() {
+        let newfile = "Untitled-";
+        let i = 1;
+        while (steemjs_files[newfile + i]) i ++;
+        steemjs_files[newfile + i] = $('#steemjs-source').val();        
+        saveSettings(false);        
+        updateSteemJsFiles();
+        $("#btn_list_files").val(newfile + i);
+    });     
+    $('input#btn_delete').click(function() {
+        let val = $("#btn_list_files").val();
+        delete steemjs_files[val];
+        $("#btn_list_files options[value='" + val + "']").remove();
+        saveSettings(false);
+        updateSteemJsFiles();
+    });     
+    $('input#btn_edit').click(function() {
+        let curtitle = $("#btn_list_files").val();
+        let title = prompt(curtitle, curtitle);
+        title = title.replace(/[^0-9a-zA-Z_\-]/g, "");
+        if (title) {
+            steemjs_files[title] = steemjs_files[curtitle];
+            delete steemjs_files[curtitle];
+            saveSettings(false);
+            updateSteemJsFiles();
+            $("#btn_list_files").val(title);
+        }
+    });     
+    // save source of steem-js
+    $('input#btn_fullscreen').click(function() {
+        let text = $("#steemjs-source").val();
+        open("https://steemyy.com/steemjs/?s=" +encodeURIComponent(text));
+    });
+    // download steemjs source text
+    $('input#btn_download').click(function() {
+        let tempElem = document.createElement('a');
+        let text = $("#steemjs-source").val();
+        text = text.replace(/\r?\n/g, "\r\n");
+        tempElem.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+        tempElem.setAttribute('download', "steem-js.txt");
+        tempElem.click();
+    });        
     // ping tests
     $('button#btn_ping').click(function() {
         // clear the test window
         $('div#ping_result').html('');
         // test all nodes
-        $("select#nodes option").each(function() {
+        $("datalist>option").each(function() {
             let node = $(this).val();
             ping(node).then(function(delta) {
                 let msg = '<i><font color=white>' + node + '</font></i>: ' + 'Ping time was <font color=green>' + String(delta) + '</font> ms<BR/>';                
@@ -1079,7 +1152,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             if (who.length > 0) {
                                 let memo1 = memo.split("[username]").join(who);
                                 logit($('textarea#console_wallet'), "Sending " + amount.toFixed(3) + " " + unit + " to @" + who + "...");
-                                steem.api.setOptions({ url: $("select#nodes").val() });
+                                steem.api.setOptions({ url: $("#nodes").val() });
                                 steem.broadcast.transfer(active_key, from_user, who, amount + " " + unit, memo1, function(err, result) {
                                     if (err) {
                                         logit($('textarea#console_wallet'), err);
