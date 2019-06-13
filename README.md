@@ -11,6 +11,8 @@ https://chrome.google.com/webstore/detail/steem-tools/emjfpeecopppojbhkigjjmcahb
 - Steem Delegators
 - Steem Delegatees
 - Steem Downvoters
+- Show Resteems in Page steemit.com/busy.org
+- Context Popup Menu to Switch between Front-ends
 - Steem Js Console
 - Steem Witness Lookup
 - Reveal Steem Deleted Comments
