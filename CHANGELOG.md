@@ -30,6 +30,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - `getIdForDiv` now strips **all** dots from an account id (previously only the
   first), preventing broken element ids for accounts with multiple dots.
+- Several handlers cleared or disabled the wrong element on invalid input — the
+  Your Downvotes tab, the delegators and delegatees tabs, and the witness-lookup
+  Query buttons now target the correct elements (addresses automated review feedback).
+- The node/API ping helper now clears its 5-second timeout once a result arrives,
+  avoiding a needless pending timer.
+- Fixed user-facing typos ("recipents" → "recipients", "evalute" → "evaluate").
 
 ### Changed
 

@@ -277,7 +277,7 @@ const getYourDownvotes = () => {
       });
     } else {
       alert('Not a Valid Steem ID.');
-      $('div#downvoters_div').html('');
+      $('div#downvoters_div2').html('');
     }
   });
 };
@@ -364,7 +364,7 @@ const handleAccountWitness = () => {
     $('div#witness_div2').html('<img src="images/loading.gif"/>');
     if (validId(id)) {
       // disable the button while API is not finished yet.
-      $('button#witness_id2').attr('disabled', true);
+      $('button#witness_btn2').attr('disabled', true);
       $.ajax({
         dataType: 'json',
         url:
@@ -931,7 +931,7 @@ document.addEventListener(
       $('div#witness_div').html('<img src="images/loading.gif"/>');
       if (validId(id)) {
         // disable the button while API is not finished yet.
-        $('button#witness_id').attr('disabled', true);
+        $('button#witness_btn').attr('disabled', true);
         $.ajax({
           dataType: 'json',
           url: 'https://' + server + '/api/steemit/witness/?cached&id=' + id + '&hash=' + hash,
@@ -1179,7 +1179,7 @@ document.addEventListener(
         });
       } else {
         alert('Not a Valid Steem ID.');
-        $('div#deleted_div').html('');
+        $('div#delegators_div').html('');
       }
     });
     // find a list of delegatees
@@ -1261,7 +1261,7 @@ document.addEventListener(
         });
       } else {
         alert('Not a Valid Steem ID.');
-        $('div#deleted_div').html('');
+        $('div#delegatees_div').html('');
       }
     });
     // redirecting console
@@ -1275,7 +1275,7 @@ document.addEventListener(
     $('input#btn_clear').click(function () {
       $('div#consolelog').html('');
     });
-    // alt + enter to evalute
+    // alt + enter to evaluate
     // alt + backspace to clear
     $('textarea#steemjs-source').keydown(function (e) {
       if (e.altKey && e.keyCode == 13) {
@@ -1485,7 +1485,7 @@ document.addEventListener(
               }
             }
           } else {
-            logit($('textarea#console_wallet'), 'Please enter recipents line by line.');
+            logit($('textarea#console_wallet'), 'Please enter recipients line by line.');
           }
         } else {
           logit($('textarea#console_wallet'), 'Need at least 0.001 SBD or STEEM.');

@@ -25,6 +25,7 @@ describe('ping', () => {
     const delta = await ping('https://example.com/favicon.ico');
     expect(typeof delta).toBe('number');
     expect(delta).toBeGreaterThanOrEqual(0);
+    expect(jest.getTimerCount()).toBe(0); // the 5s timeout is cleared once a result arrives
   });
 
   it('still resolves when the image errors (the server responded)', async () => {

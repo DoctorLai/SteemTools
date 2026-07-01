@@ -41,7 +41,9 @@
   function ping(url, multiplier) {
     return new Promise(function (resolve, reject) {
       var start = new Date().getTime();
+      var timeout;
       var response = function () {
+        clearTimeout(timeout);
         var delta = new Date().getTime() - start;
         delta *= multiplier || 1;
         resolve(delta);
@@ -49,7 +51,7 @@
       request_image(url).then(response).catch(response);
 
       // Set a timeout for max-pings, 5s.
-      setTimeout(function () {
+      timeout = setTimeout(function () {
         reject(Error('Timeout'));
       }, 5000);
     });
