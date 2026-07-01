@@ -3,6 +3,9 @@
 Thanks for taking the time to contribute! This project is a community-maintained
 Chrome extension and pull requests, bug reports and ideas are all welcome.
 
+This project is released with a [Code of Conduct](CODE_OF_CONDUCT.md). By
+participating, you are expected to uphold it.
+
 ## Getting started
 
 1. **Fork** the repository and clone your fork.
@@ -56,11 +59,25 @@ npm run build
 This creates `dist/steem-tools-v<version>.zip`, containing only the files needed at
 runtime, ready to upload to the Chrome Web Store.
 
+### Writing tests
+
+Unit tests use [Jest](https://jestjs.io/) and live in `tests/`. They cover the pure,
+side-effect-free helpers in `js/functions.js`, `js/content.js` and `js/ping.js`.
+
+- Run `npm test` for a quick pass, or `npm run test:coverage` to also enforce the
+  coverage threshold configured in `jest.config.js`.
+- When adding a testable helper, export it via the guarded
+  `if (typeof module !== 'undefined' && module.exports)` block at the bottom of the
+  file so Node can import it without affecting the browser runtime.
+- Browser-only integration code (DOM/network) is excluded from coverage with an
+  `/* istanbul ignore next */` comment.
+
 ## Coding standards
 
 - Keep changes focused and avoid reformatting unrelated code.
 - Run `npm run check` before opening a pull request; CI runs the same gate.
-- Add or update tests when you change the pure helpers in `js/functions.js`.
+- Add or update tests when you change the pure helpers in `js/functions.js`,
+  `js/content.js` or `js/ping.js`.
 - Do not edit the vendored libraries in `js/` (jQuery, steem.js, Chart.js, etc.).
 
 ## Commit messages

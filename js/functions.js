@@ -2,7 +2,7 @@
 
 // given a perm link restore its full Steem URL
 const restore = (url) => {
-  var pat = /(re-\w+-)*((\w+\-)*)/g;
+  var pat = /(re-\w+-)*((\w+-)*)/g;
   var my = pat.exec(url);
   if (my[1] && my[2]) {
     var author = my[1].split('-')[1];
@@ -15,7 +15,7 @@ const restore = (url) => {
 // return if valid steem id
 const validId = (id) => {
   id = id.trim();
-  let pat = /^[a-z0-9\-\.]+$/g;
+  let pat = /^[a-z0-9\-.]+$/g;
   return id && pat.test(id);
 };
 

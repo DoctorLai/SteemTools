@@ -48,6 +48,7 @@ function json(response) {
 }
 
 let url = document.location.href;
+/* istanbul ignore next -- DOM + network integration, exercised only in the browser */
 if (is_steem_domain(url)) {
   let pat = /https?:\/\/(.*)\/@(.*)\/(.*)/g.exec(url);
   if (pat && pat[2] && pat[3]) {
@@ -104,3 +105,9 @@ document.body.onkeydown = function (e) {
     }
 };
 */
+
+// Expose the pure helpers to Node-based tooling (e.g. Jest) without affecting the
+// content script at runtime, where `module` is undefined and this block is skipped.
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = { is_steem_domain, get_steem_url, status, json };
+}

@@ -24,7 +24,7 @@ let parent = chrome.contextMenus.create({
 let sz = steem_websites.length;
 for (let i = 0; i < sz; ++i) {
   let cur_domain = steem_websites[i];
-  let child = chrome.contextMenus.create({
+  chrome.contextMenus.create({
     title: cur_domain,
     parentId: parent,
     onclick: (info, tab) => {

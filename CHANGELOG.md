@@ -12,16 +12,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - The popup now remembers the **last active tab** across opens (best-effort, never
   blocks initialisation).
 - Development tooling: ESLint (flat config), Prettier, Jest and EditorConfig.
-- Unit tests for the pure helpers in `js/functions.js` with an enforced coverage
-  threshold.
+- Unit tests for the pure helpers in `js/functions.js`, `js/content.js` and
+  `js/ping.js`, with an enforced coverage threshold.
 - `npm run build` — produces a Chrome Web Store-ready zip in `dist/`.
 - Continuous integration (GitHub Actions) running lint, format check, tests and a
   build across Node.js 18, 20 and 22.
 - A release workflow that attaches the packaged zip to tagged GitHub releases.
-- Project documentation: `CONTRIBUTING.md`, `SECURITY.md`, `PRIVACY.md`, issue and
-  pull request templates, `.editorconfig`, `.gitattributes` and an expanded
-  `.gitignore`.
-- A rewritten `README.md` with status badges and clearer install/usage/build docs.
+- Dependabot configuration for npm and GitHub Actions updates.
+- Project documentation and community health files: `CONTRIBUTING.md`,
+  `CODE_OF_CONDUCT.md`, `SECURITY.md`, `PRIVACY.md`, issue and pull request
+  templates, `CODEOWNERS`, `FUNDING.yml`, `.editorconfig`, `.gitattributes`,
+  `.nvmrc` and an expanded `.gitignore`.
+- A rewritten `README.md` with status badges, a table of contents, a project
+  structure overview and clearer install/usage/build docs.
 
 ### Fixed
 

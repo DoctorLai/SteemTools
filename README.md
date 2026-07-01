@@ -33,6 +33,19 @@ console, a multi-send wallet and more.
 
 </div>
 
+## Table of contents
+
+- [Install](#install)
+- [Features](#features)
+- [Screenshots](#screenshots)
+- [Development](#development)
+- [Project structure](#project-structure)
+- [Manifest version](#manifest-version)
+- [Privacy](#privacy)
+- [Contributing](#contributing)
+- [Support](#support)
+- [License](#license)
+
 ## Install
 
 **From the Chrome Web Store (recommended):**
@@ -123,7 +136,37 @@ npm run build
 | `npm run check`         | Lint + format check + tested coverage (the CI gate) |
 | `npm run build`         | Produce a Web Store-ready zip in `dist/`            |
 
+Unit tests live in `tests/` and cover the pure helpers in `js/functions.js`,
+`js/content.js` and `js/ping.js`; the coverage threshold is enforced by
+`npm run test:coverage` (and in CI).
+
 See [CONTRIBUTING.md](CONTRIBUTING.md) for the full workflow.
+
+## Project structure
+
+```text
+.
+├── manifest.json      # Chrome extension manifest (Manifest V2)
+├── main.html          # popup UI (jQuery UI tabs)
+├── icon.png           # toolbar icon
+├── _locales/          # i18n message catalogues
+├── css/               # custom + vendored styles
+├── bs/                # Bootstrap (vendored)
+├── images/            # icons, banners and screenshots
+├── js/
+│   ├── functions.js   # pure helpers (unit-tested)
+│   ├── content.js     # content script: resteems + domain checks (unit-tested)
+│   ├── context.js     # right-click context menu (front-end switcher)
+│   ├── background.js  # background page
+│   ├── ping.js        # latency helper (unit-tested)
+│   ├── steemtools.js  # popup logic
+│   └── *.min.js …     # vendored libraries (jQuery, steem.js, Chart.js, …)
+├── scripts/build.js   # packages the extension into dist/*.zip
+└── tests/             # Jest unit tests
+```
+
+Only the project's own source is linted, formatted and tested; the vendored
+libraries in `js/`, `bs/` and `css/` are excluded.
 
 ## Manifest version
 
@@ -147,8 +190,8 @@ choose _Save Key_. See the full [Privacy Policy](PRIVACY.md).
 ## Contributing
 
 Bug reports, feature requests and pull requests are very welcome — please read
-[CONTRIBUTING.md](CONTRIBUTING.md) first. By participating you agree to keep the
-community welcoming and respectful.
+[CONTRIBUTING.md](CONTRIBUTING.md) first. By participating you agree to abide by
+our [Code of Conduct](CODE_OF_CONDUCT.md).
 
 ## Support
 

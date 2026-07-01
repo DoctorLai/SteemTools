@@ -58,10 +58,12 @@ module.exports = [
     },
     rules: {
       'no-undef': 'off',
-      'no-unused-vars': 'warn',
+      // Callback signatures (jQuery / chrome APIs) frequently leave trailing args unused.
+      'no-unused-vars': ['warn', { args: 'none' }],
       'no-useless-escape': 'warn',
       'no-empty': 'warn',
-      'no-redeclare': 'warn',
+      // Local names such as `status` / `parent` intentionally shadow rarely-used window globals.
+      'no-redeclare': ['warn', { builtinGlobals: false }],
       'no-prototype-builtins': 'warn',
     },
   },

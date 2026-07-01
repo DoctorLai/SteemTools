@@ -41,11 +41,6 @@ function updateSteemJsFiles() {
   }
 }
 
-// get Node
-const getNode = () => {
-  return $('#nodes').val();
-};
-
 // return current API server
 const getServer = () => {
   let server = $('select#server').val();
@@ -679,7 +674,6 @@ document.addEventListener(
           let id = prepareId(settings['steemit_id']);
           $('input#steemit_id').val(id);
           if (validId(id)) {
-            let tid = getIdForDiv(id);
             getVP(id, $('div#account_vp'), settings['server']);
             getRep(id, $('div#account_rep'), settings['nodes']);
             getAccountValue(id, $('div#account_value'), settings['nodes']);
@@ -1332,7 +1326,7 @@ document.addEventListener(
     $('input#btn_edit').click(function () {
       let curtitle = $('#btn_list_files').val();
       let title = prompt(curtitle, curtitle);
-      title = title.replace(/[^0-9a-zA-Z_\-]/g, '');
+      title = title.replace(/[^0-9a-zA-Z_-]/g, '');
       if (title) {
         steemjs_files[title] = steemjs_files[curtitle];
         delete steemjs_files[curtitle];

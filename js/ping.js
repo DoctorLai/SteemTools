@@ -4,6 +4,7 @@
 // and script tags, directly into window globals.
 // Thanks to https://github.com/umdjs/umd/blob/master/templates/returnExports.js
 (function (root, factory) {
+  /* istanbul ignore next -- UMD module boilerplate */
   if (typeof define === 'function' && define.amd) {
     define([], factory);
   } else if (typeof module === 'object' && module.exports) {

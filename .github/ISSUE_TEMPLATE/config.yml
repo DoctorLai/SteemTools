@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 💬 Author's website (steemyy.com)
+    url: https://steemyy.com
+    about: More Steem tools, articles and online editors by the author.
+  - name: 🔒 Report a security vulnerability
+    url: https://github.com/DoctorLai/SteemTools/security/advisories/new
+    about: Please report security issues privately, not as public issues.
