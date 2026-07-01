@@ -1,0 +1,30 @@
+# Dependencies & build output
+node_modules/
+dist/
+coverage/
+package-lock.json
+
+# Vendored assets (not ours to reformat)
+bs/
+css/
+images/
+_locales/
+LICENSE
+
+# Third-party / minified libraries
+js/amcharts.js
+js/Chart.min.js
+js/chartjs-plugin-streaming.js
+js/export.min.js
+js/jquery.js
+js/jquery-3.2.1.min.js
+js/jquery-ui.js
+js/moment.min.js
+js/pie.js
+js/sorttable.js
+js/steem.min.js
+js/MD5.js
+js/light.js
+
+# The popup markup embeds a whitespace-sensitive <textarea> default; leave as-is.
+main.html

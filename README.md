@@ -1,38 +1,167 @@
+<div align="center">
+
+<img src="images/icon-128.png" alt="Steem Tools" width="96" height="96" />
+
 # Steem Tools
-A Chrome Extension for SteemIt Users.
 
-# Chrome Webstore
-https://chrome.google.com/webstore/detail/steem-tools/emjfpeecopppojbhkigjjmcahbfahhbn
+**A Chrome extension packed with handy tools for [Steem](https://steem.com) users** —
+blockchain & account insights, delegations, downvotes, witness lookup, a Steem-JS
+console, a multi-send wallet and more.
 
-# Features
-- Steem BlockChain Information
-- Steem Users Account Information
-- Steem Nodes Information
-- Steem Delegators
-- Steem Delegatees
-- Steem Downvoters
-- Show Resteems in Page steemit.com/busy.org
-- Context Popup Menu to Switch between Front-ends
-- Steem Js Console
-- Steem Witness Lookup
-- Reveal Steem Deleted Comments
-- Steem Powerdown Lookup
-- Send SBD/Steem to Multiple Receipents
-- Reputation Calculator
-- API/Steem Server Ping Tests
+[![CI](https://github.com/DoctorLai/SteemTools/actions/workflows/ci.yml/badge.svg)](https://github.com/DoctorLai/SteemTools/actions/workflows/ci.yml)
+[![Node](https://img.shields.io/badge/node-%3E%3D18-brightgreen.svg)](https://nodejs.org)
+[![Manifest V2](https://img.shields.io/badge/manifest-v2-orange.svg)](manifest.json)
+[![Code style: Prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg)](https://prettier.io)
+[![PRs welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/DoctorLai/SteemTools)
 
-# Screenshots
-![](https://github.com/DoctorLai/SteemTools/blob/master/images/delegate.jpg?raw=true)
-![](https://github.com/DoctorLai/SteemTools/blob/master/images/data.jpg?raw=true)
-![](https://github.com/DoctorLai/SteemTools/blob/master/images/account-witness.jpg?raw=true)
-![](https://github.com/DoctorLai/SteemTools/blob/master/images/delegatees.jpg?raw=true)
-![](https://github.com/DoctorLai/SteemTools/blob/master/images/delegators.jpg?raw=true)
-![](https://github.com/DoctorLai/SteemTools/blob/master/images/deleted.jpg?raw=true)
-![](https://github.com/DoctorLai/SteemTools/blob/master/images/downvoters.jpg?raw=true)
-![](https://github.com/DoctorLai/SteemTools/blob/master/images/general.jpg?raw=true)
-![](https://github.com/DoctorLai/SteemTools/blob/master/images/powerdown.jpg?raw=true)
-![](https://github.com/DoctorLai/SteemTools/blob/master/images/setting.jpg?raw=true)
-![](https://github.com/DoctorLai/SteemTools/blob/master/images/steemjs.jpg?raw=true)
-![](https://github.com/DoctorLai/SteemTools/blob/master/images/tools.jpg?raw=true)
-![](https://github.com/DoctorLai/SteemTools/blob/master/images/wallet.jpg?raw=true)
-![](https://github.com/DoctorLai/SteemTools/blob/master/images/witness-lookup.jpg?raw=true)
+[![License: MIT](https://img.shields.io/github/license/DoctorLai/SteemTools.svg)](LICENSE)
+[![Last commit](https://img.shields.io/github/last-commit/DoctorLai/SteemTools.svg)](https://github.com/DoctorLai/SteemTools/commits)
+[![Commit activity](https://img.shields.io/github/commit-activity/m/DoctorLai/SteemTools.svg)](https://github.com/DoctorLai/SteemTools/commits)
+[![Repo size](https://img.shields.io/github/repo-size/DoctorLai/SteemTools.svg)](https://github.com/DoctorLai/SteemTools)
+[![Top language](https://img.shields.io/github/languages/top/DoctorLai/SteemTools.svg)](https://github.com/DoctorLai/SteemTools)
+[![Open issues](https://img.shields.io/github/issues/DoctorLai/SteemTools.svg)](https://github.com/DoctorLai/SteemTools/issues)
+[![Open PRs](https://img.shields.io/github/issues-pr/DoctorLai/SteemTools.svg)](https://github.com/DoctorLai/SteemTools/pulls)
+[![Stars](https://img.shields.io/github/stars/DoctorLai/SteemTools.svg)](https://github.com/DoctorLai/SteemTools/stargazers)
+[![Forks](https://img.shields.io/github/forks/DoctorLai/SteemTools.svg)](https://github.com/DoctorLai/SteemTools/network/members)
+[![Watchers](https://img.shields.io/github/watchers/DoctorLai/SteemTools.svg)](https://github.com/DoctorLai/SteemTools/watchers)
+
+[![Chrome Web Store](https://img.shields.io/chrome-web-store/v/emjfpeecopppojbhkigjjmcahbfahhbn?label=web%20store)](https://chrome.google.com/webstore/detail/steem-tools/emjfpeecopppojbhkigjjmcahbfahhbn)
+[![Users](https://img.shields.io/chrome-web-store/users/emjfpeecopppojbhkigjjmcahbfahhbn?label=users)](https://chrome.google.com/webstore/detail/steem-tools/emjfpeecopppojbhkigjjmcahbfahhbn)
+[![Rating](https://img.shields.io/chrome-web-store/rating/emjfpeecopppojbhkigjjmcahbfahhbn?label=rating)](https://chrome.google.com/webstore/detail/steem-tools/emjfpeecopppojbhkigjjmcahbfahhbn)
+[![Privacy](https://img.shields.io/badge/privacy-policy-blue.svg)](PRIVACY.md)
+
+</div>
+
+## Install
+
+**From the Chrome Web Store (recommended):**
+
+👉 [Steem Tools on the Chrome Web Store](https://chrome.google.com/webstore/detail/steem-tools/emjfpeecopppojbhkigjjmcahbfahhbn)
+
+**From source (for development / the latest code):**
+
+1. Download or clone this repository.
+2. Open `chrome://extensions` in Chrome.
+3. Enable **Developer mode** (top-right).
+4. Click **Load unpacked** and select the repository folder (the one containing
+   `manifest.json`).
+
+## Features
+
+- **Blockchain information** — head block, hardfork version, feed/market price and more.
+- **Account insights** — voting power & HF20 voting mana with a "full in" estimate,
+  reputation, estimated account value and curation stats.
+- **Watch your friends** — pin extra account ids to see their VP, reputation and value
+  at a glance.
+- **Delegations** — delegate Steem Power via SteemConnect and look up any account's
+  **delegators** and **delegatees**.
+- **Downvotes** — see who downvoted you, and review the downvotes you have cast.
+- **Witnesses** — witness lookup, the top active witnesses, and the witnesses you vote
+  for (with one-click unvote).
+- **Deleted comments** — reveal deleted comments/posts for any account.
+- **Power down** — check any account's power-down schedule.
+- **Reputation calculator** — convert a raw reputation into the friendly number.
+- **Steem-JS console** — run [steem.js](https://github.com/steemit/steem-js) snippets
+  right in the popup, with save/load, download and a full-screen editor.
+- **Multi-send wallet** — send SBD/STEEM to many recipients at once, with a
+  `[username]` memo template.
+- **Node & API tools** — server/node status and ping tests for Steem RPC nodes.
+- **Front-end switcher** — a right-click context menu to jump between Steem front-ends
+  (steemit.com, busy.org, steemd.com, steemdb.com, steemhunt.com, …).
+- **Resteems inline** — shows the list of resteems directly on supported Steem post
+  pages.
+- **Localised** — English (en, en-GB, en-US) and Chinese (Simplified & Traditional).
+
+## Screenshots
+
+![General](images/general.jpg)
+![Account data](images/data.jpg)
+![Delegate](images/delegate.jpg)
+
+<details>
+<summary>More screenshots</summary>
+
+![Account witness](images/account-witness.jpg)
+![Delegatees](images/delegatees.jpg)
+![Delegators](images/delegators.jpg)
+![Deleted](images/deleted.jpg)
+![Downvoters](images/downvoters.jpg)
+![Powerdown](images/powerdown.jpg)
+![Settings](images/setting.jpg)
+![Steem-JS console](images/steemjs.jpg)
+![Tools](images/tools.jpg)
+![Wallet](images/wallet.jpg)
+![Witness lookup](images/witness-lookup.jpg)
+
+</details>
+
+## Development
+
+The extension is plain HTML/CSS/JavaScript with no bundler. Node.js (>= 18) is only
+required for the development tooling (linting, formatting, tests and packaging).
+
+```bash
+# install dev dependencies
+npm install
+
+# run the full quality gate (lint + format check + tested coverage)
+npm run check
+
+# build a Chrome Web Store-ready zip into dist/
+npm run build
+```
+
+| Script                  | Description                                         |
+| ----------------------- | --------------------------------------------------- |
+| `npm run lint`          | Lint the source with ESLint                         |
+| `npm run lint:fix`      | Auto-fix lint issues where possible                 |
+| `npm run format`        | Format the source with Prettier                     |
+| `npm run format:check`  | Verify formatting without writing changes           |
+| `npm test`              | Run the Jest unit tests                             |
+| `npm run test:coverage` | Run the tests and enforce the coverage threshold    |
+| `npm run check`         | Lint + format check + tested coverage (the CI gate) |
+| `npm run build`         | Produce a Web Store-ready zip in `dist/`            |
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for the full workflow.
+
+## Manifest version
+
+Steem Tools currently ships as a **Manifest V2** extension. Two headline
+features depend on capabilities that Manifest V3 restricts:
+
+- the **Steem-JS console** evaluates user code with `eval()`, which requires
+  `unsafe-eval` in the content-security policy (disallowed for MV3 extension pages), and
+- the **front-end switcher** uses context-menu `onclick` handlers (replaced by an event
+  listener in MV3).
+
+A Manifest V3 migration (moving the console into a sandboxed page and reworking the
+context menu) is on the roadmap — contributions are welcome.
+
+## Privacy
+
+Steem Tools does not use analytics or trackers. Your private keys are only ever used
+locally in your browser to sign transactions and are stored **only** if you explicitly
+choose _Save Key_. See the full [Privacy Policy](PRIVACY.md).
+
+## Contributing
+
+Bug reports, feature requests and pull requests are very welcome — please read
+[CONTRIBUTING.md](CONTRIBUTING.md) first. By participating you agree to keep the
+community welcoming and respectful.
+
+## Support
+
+If you find Steem Tools useful, consider supporting the author:
+
+- 💜 [PayPal](https://www.paypal.me/doctorlai)
+- ₿ [Bitcoin](https://justyy.com/out/bitcoin)
+- ☁️ Referral links for [Vultr](https://justyy.com/out/vultr2) and
+  [Linode](https://justyy.com/out/linode) VPS
+
+## License
+
+Released under the [MIT License](LICENSE) — Copyright (c) [@justyy](https://steemit.com/@justyy).
+
+Built with ❤️ by [@justyy](https://steemyy.com) ·
+[GitHub](https://github.com/DoctorLai/SteemTools)
