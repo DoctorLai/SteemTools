@@ -28,6 +28,7 @@ js/pie.js linguist-vendored
 js/sorttable.js linguist-vendored
 js/steem.min.js linguist-vendored
 js/MD5.js linguist-vendored
+js/light.js linguist-vendored
 bs/** linguist-vendored
 css/jquery-ui.css linguist-vendored
 css/export.css linguist-vendored

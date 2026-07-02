@@ -12,8 +12,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - The popup now remembers the **last active tab** across opens (best-effort, never
   blocks initialisation).
 - Development tooling: ESLint (flat config), Prettier, Jest and EditorConfig.
-- Unit tests for the pure helpers in `js/functions.js`, `js/content.js` and
-  `js/ping.js`, with an enforced coverage threshold.
+- A sandboxed page (`sandbox.html` / `js/sandbox.js`) that runs the Steem-JS
+  console under Manifest V3, communicating with the popup via `postMessage`.
+- Unit tests for the pure helpers in `js/functions.js`, `js/content.js`,
+  `js/ping.js`, `js/context.js` and `js/sandbox.js`, with an enforced coverage
+  threshold.
 - `npm run build` — produces a Chrome Web Store-ready zip in `dist/`.
 - Continuous integration (GitHub Actions) running lint, format check, tests and a
   build across Node.js 18, 20 and 22.
@@ -39,7 +42,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Migrated the extension to **Manifest V3**: a background **service worker**
+  (`js/background.js`, which `importScripts` `js/context.js`), the `action` key,
+  `host_permissions`, MV3 `web_accessible_resources` and a compliant
+  content-security policy — so it installs on current Chrome and Edge.
+- Reworked the right-click front-end switcher for MV3: the menus are created in
+  `chrome.runtime.onInstalled` and handled by a single
+  `chrome.contextMenus.onClicked` listener.
 - Bumped the extension version to `1.0.0` and kept `manifest.json` and
   `package.json` versions in sync (verified by a test).
+
+### Security
+
+- API/SteemSQL error responses are now HTML-escaped and truncated before being
+  rendered, so a failed request's body (for example a Cloudflare challenge page)
+  can no longer inject markup into the popup or trip the content-security policy.
 
 [1.0.0]: https://github.com/DoctorLai/SteemTools/releases/tag/v1.0.0

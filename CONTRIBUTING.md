@@ -23,7 +23,7 @@ participating, you are expected to uphold it.
 
 ## Development workflow
 
-The extension is a classic (Manifest V2) Chrome extension made up of plain HTML,
+The extension is a Manifest V3 Chrome extension made up of plain HTML,
 CSS and JavaScript — there is no bundler. The `js/` directory contains both the
 project's own source and several vendored third-party libraries (jQuery, steem.js,
 Chart.js, amCharts, etc.). Only the project's own files are linted and formatted;
@@ -62,7 +62,8 @@ runtime, ready to upload to the Chrome Web Store.
 ### Writing tests
 
 Unit tests use [Jest](https://jestjs.io/) and live in `tests/`. They cover the pure,
-side-effect-free helpers in `js/functions.js`, `js/content.js` and `js/ping.js`.
+side-effect-free helpers in `js/functions.js`, `js/content.js`, `js/ping.js`,
+`js/context.js` and `js/sandbox.js`.
 
 - Run `npm test` for a quick pass, or `npm run test:coverage` to also enforce the
   coverage threshold configured in `jest.config.js`.
@@ -77,7 +78,7 @@ side-effect-free helpers in `js/functions.js`, `js/content.js` and `js/ping.js`.
 - Keep changes focused and avoid reformatting unrelated code.
 - Run `npm run check` before opening a pull request; CI runs the same gate.
 - Add or update tests when you change the pure helpers in `js/functions.js`,
-  `js/content.js` or `js/ping.js`.
+  `js/content.js`, `js/ping.js`, `js/context.js` or `js/sandbox.js`.
 - Do not edit the vendored libraries in `js/` (jQuery, steem.js, Chart.js, etc.).
 
 ## Commit messages

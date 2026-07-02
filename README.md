@@ -10,7 +10,7 @@ console, a multi-send wallet and more.
 
 [![CI](https://github.com/DoctorLai/SteemTools/actions/workflows/ci.yml/badge.svg)](https://github.com/DoctorLai/SteemTools/actions/workflows/ci.yml)
 [![Node](https://img.shields.io/badge/node-%3E%3D18-brightgreen.svg)](https://nodejs.org)
-[![Manifest V2](https://img.shields.io/badge/manifest-v2-orange.svg)](manifest.json)
+[![Manifest V3](https://img.shields.io/badge/manifest-v3-blue.svg)](manifest.json)
 [![Code style: Prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg)](https://prettier.io)
 [![PRs welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/DoctorLai/SteemTools)
@@ -137,8 +137,8 @@ npm run build
 | `npm run build`         | Produce a Web Store-ready zip in `dist/`            |
 
 Unit tests live in `tests/` and cover the pure helpers in `js/functions.js`,
-`js/content.js` and `js/ping.js`; the coverage threshold is enforced by
-`npm run test:coverage` (and in CI).
+`js/content.js`, `js/ping.js`, `js/context.js` and `js/sandbox.js`; the coverage
+threshold is enforced by `npm run test:coverage` (and in CI).
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for the full workflow.
 
@@ -146,8 +146,9 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for the full workflow.
 
 ```text
 .
-├── manifest.json      # Chrome extension manifest (Manifest V2)
+├── manifest.json      # Chrome extension manifest (Manifest V3)
 ├── main.html          # popup UI (jQuery UI tabs)
+├── sandbox.html       # sandboxed page that runs the Steem-JS console
 ├── icon.png           # toolbar icon
 ├── _locales/          # i18n message catalogues
 ├── css/               # custom + vendored styles
@@ -156,8 +157,9 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for the full workflow.
 ├── js/
 │   ├── functions.js   # pure helpers (unit-tested)
 │   ├── content.js     # content script: resteems + domain checks (unit-tested)
-│   ├── context.js     # right-click context menu (front-end switcher)
-│   ├── background.js  # background page
+│   ├── context.js     # right-click context menu / front-end switcher (unit-tested)
+│   ├── background.js  # service worker (MV3 background)
+│   ├── sandbox.js     # Steem-JS console runner for the sandboxed page (unit-tested)
 │   ├── ping.js        # latency helper (unit-tested)
 │   ├── steemtools.js  # popup logic
 │   └── *.min.js …     # vendored libraries (jQuery, steem.js, Chart.js, …)
@@ -170,16 +172,20 @@ libraries in `js/`, `bs/` and `css/` are excluded.
 
 ## Manifest version
 
-Steem Tools currently ships as a **Manifest V2** extension. Two headline
-features depend on capabilities that Manifest V3 restricts:
+Steem Tools ships as a **Manifest V3** extension, so it installs on current
+versions of Chrome and Edge. Two features that MV3 restricts are handled as
+follows:
 
-- the **Steem-JS console** evaluates user code with `eval()`, which requires
-  `unsafe-eval` in the content-security policy (disallowed for MV3 extension pages), and
-- the **front-end switcher** uses context-menu `onclick` handlers (replaced by an event
-  listener in MV3).
+- the **Steem-JS console** evaluates user code with `eval()`, which MV3 forbids on
+  extension pages, so it runs inside a dedicated **sandboxed page**
+  (`sandbox.html` / `js/sandbox.js`) that communicates with the popup via
+  `postMessage`, and
+- the **front-end switcher** uses a single `chrome.contextMenus.onClicked`
+  listener (MV3 dropped the per-item `onclick` callback), with the menus created
+  in `chrome.runtime.onInstalled`.
 
-A Manifest V3 migration (moving the console into a sandboxed page and reworking the
-context menu) is on the roadmap — contributions are welcome.
+The background logic runs as a **service worker** (`js/background.js`, which
+`importScripts` the context-menu wiring in `js/context.js`).
 
 ## Privacy
 

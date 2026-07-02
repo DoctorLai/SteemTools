@@ -2,7 +2,13 @@
 module.exports = {
   testEnvironment: 'jsdom',
   roots: ['<rootDir>/tests'],
-  collectCoverageFrom: ['js/functions.js', 'js/content.js', 'js/ping.js'],
+  collectCoverageFrom: [
+    'js/functions.js',
+    'js/content.js',
+    'js/ping.js',
+    'js/context.js',
+    'js/sandbox.js',
+  ],
   coverageDirectory: 'coverage',
   coverageReporters: ['text', 'text-summary'],
   coverageThreshold: {
