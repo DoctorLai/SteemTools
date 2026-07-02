@@ -4,14 +4,7 @@ console.log('SteemTools Content Script Loaded.');
 
 // all supported steem domains
 let steem_websites = [
-  'steemit.com',
-  'staging.busy.org',
-  'busy.org',
-  'steemd.com',
-  'steemdb.com',
-  'steemhunt.com',
-  'mspsteem.com',
-  'utopian.io',
+  'steemit.com'
 ];
 
 // check if url is steem websites
