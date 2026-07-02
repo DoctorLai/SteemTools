@@ -39,7 +39,7 @@ function main() {
   }
 
   const output = fs.createWriteStream(outFile);
-  const archive = archiver('zip', { zlib: { level: 9 } });
+  const archive = createArchive('zip', { zlib: { level: 9 } });
 
   output.on('close', () => {
     const kb = (archive.pointer() / 1024).toFixed(1);
@@ -77,6 +77,19 @@ function main() {
   }
 
   return archive.finalize();
+}
+
+function createArchive(format, options) {
+  if (typeof archiver === 'function') {
+    return archiver(format, options);
+  }
+  if (format === 'zip' && typeof archiver.ZipArchive === 'function') {
+    return new archiver.ZipArchive(options);
+  }
+  if (format === 'tar' && typeof archiver.TarArchive === 'function') {
+    return new archiver.TarArchive(options);
+  }
+  throw new TypeError('Unsupported archiver export shape');
 }
 
 main().catch((err) => {
