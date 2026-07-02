@@ -58,6 +58,18 @@ const logit = (dom, msg) => {
   dom.val((s + '\n' + n + ': ' + msg).trim());
 };
 
+const apiErrorHtml = (server, error, request) => {
+  let details = request && request.responseText ? String(request.responseText).slice(0, 500) : '';
+  let escapedDetails = details ? '<pre>' + escapeHtml(details) + '</pre>' : '';
+  return (
+    '<font color=red>API/SteemSQL Server (' +
+    escapeHtml(server + error) +
+    ') is currently offline. Please try again later!' +
+    escapedDetails +
+    '</font>'
+  );
+};
+
 // get top witnesses
 const getTopWitnesses = (dom, server) => {
   server = server || default_node;
@@ -261,14 +273,7 @@ const getYourDownvotes = () => {
           }
         },
         error: function (request, status, error) {
-          $('div#downvoters_div2').html(
-            '<font color=red>API/SteemSQL Server (' +
-              server +
-              error +
-              ') is currently offline. Please try again later!' +
-              request.responseText +
-              '</font>'
-          );
+          $('div#downvoters_div2').html(apiErrorHtml(server, error, request));
         },
         complete: function (data) {
           // re-enable the button
@@ -420,14 +425,7 @@ const handleAccountWitness = () => {
           }
         },
         error: function (request, status, error) {
-          $('div#witness_div2').html(
-            '<font color=red>API/SteemSQL Server (' +
-              server +
-              error +
-              ') is currently offline. Please try again later!' +
-              request.responseText +
-              '</font>'
-          );
+          $('div#witness_div2').html(apiErrorHtml(server, error, request));
         },
         complete: function (data) {
           // re-enable the button
@@ -454,14 +452,7 @@ const handleProfile = (dom, input, btn) => {
     url: 'https://' + server + '/api/steemit/account/profile/?cached&id=' + id + '&hash=' + hash,
     cache: false,
     error: function (request, status, error) {
-      dom.html(
-        '<font color=red>API/SteemSQL Server (' +
-          server +
-          error +
-          ') is currently offline. Please try again later!' +
-          request.responseText +
-          '</font>'
-      );
+      dom.html(apiErrorHtml(server, error, request));
     },
     complete: function (data) {
       // re-enable the button
@@ -822,14 +813,7 @@ document.addEventListener(
             }
           },
           error: function (request, status, error) {
-            $('div#powerdown_div').html(
-              '<font color=red>API/SteemSQL Server (' +
-                server +
-                error +
-                ') is currently offline. Please try again later!' +
-                request.responseText +
-                '</font>'
-            );
+            $('div#powerdown_div').html(apiErrorHtml(server, error, request));
           },
           complete: function (data) {
             // re-enable the button
@@ -899,14 +883,7 @@ document.addEventListener(
             }
           },
           error: function (request, status, error) {
-            $('div#downvoters_div').html(
-              '<font color=red>API/SteemSQL Server (' +
-                server +
-                error +
-                ') is currently offline. Please try again later!' +
-                request.responseText +
-                '</font>'
-            );
+            $('div#downvoters_div').html(apiErrorHtml(server, error, request));
           },
           complete: function (data) {
             // re-enable the button
@@ -987,14 +964,7 @@ document.addEventListener(
             }
           },
           error: function (request, status, error) {
-            $('div#witness_div').html(
-              '<font color=red>API/SteemSQL Server (' +
-                server +
-                error +
-                ') is currently offline. Please try again later!' +
-                request.responseText +
-                '</font>'
-            );
+            $('div#witness_div').html(apiErrorHtml(server, error, request));
           },
           complete: function (data) {
             // re-enable the button
@@ -1066,14 +1036,7 @@ document.addEventListener(
             }
           },
           error: function (request, status, error) {
-            $('div#deleted_div').html(
-              '<font color=red>API/SteemSQL Server (' +
-                server +
-                error +
-                ') is currently offline. Please try again later!' +
-                request.responseText +
-                '</font>'
-            );
+            $('div#deleted_div').html(apiErrorHtml(server, error, request));
           },
           complete: function (data) {
             // re-enable the button
@@ -1163,14 +1126,7 @@ document.addEventListener(
             }
           },
           error: function (request, status, error) {
-            $('div#delegators_div').html(
-              '<font color=red>API/SteemSQL Server (' +
-                server +
-                error +
-                ') is currently offline. Please try again later!' +
-                request.responseText +
-                '</font>'
-            );
+            $('div#delegators_div').html(apiErrorHtml(server, error, request));
           },
           complete: function (data) {
             // re-enable the button
@@ -1245,14 +1201,7 @@ document.addEventListener(
             }
           },
           error: function (request, status, error) {
-            $('div#delegatees_div').html(
-              '<font color=red>API/SteemSQL Server (' +
-                server +
-                error +
-                ') is currently offline. Please try again later!' +
-                request.responseText +
-                '</font>'
-            );
+            $('div#delegatees_div').html(apiErrorHtml(server, error, request));
           },
           complete: function (data) {
             // re-enable the button
