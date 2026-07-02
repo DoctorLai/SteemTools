@@ -1,0 +1,38 @@
+# Normalise line endings across platforms.
+* text=auto eol=lf
+
+# Keep binary assets untouched.
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.pdf binary
+*.ai binary
+*.zip binary
+*.woff binary
+*.woff2 binary
+*.ttf binary
+*.eot binary
+
+# Vendored third-party libraries: excluded from GitHub language stats and diffs.
+js/amcharts.js linguist-vendored
+js/Chart.min.js linguist-vendored
+js/chartjs-plugin-streaming.js linguist-vendored
+js/export.min.js linguist-vendored
+js/jquery.js linguist-vendored
+js/jquery-3.2.1.min.js linguist-vendored
+js/jquery-ui.js linguist-vendored
+js/moment.min.js linguist-vendored
+js/pie.js linguist-vendored
+js/sorttable.js linguist-vendored
+js/steem.min.js linguist-vendored
+js/MD5.js linguist-vendored
+js/light.js linguist-vendored
+bs/** linguist-vendored
+css/jquery-ui.css linguist-vendored
+css/export.css linguist-vendored
+
+# Mark minified files so they collapse in diffs.
+*.min.js linguist-generated
+*.min.css linguist-generated

@@ -1,0 +1,61 @@
+# Changelog
+
+All notable changes to this project are documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [1.0.0] - 2026
+
+### Added
+
+- The popup now remembers the **last active tab** across opens (best-effort, never
+  blocks initialisation).
+- Development tooling: ESLint (flat config), Prettier, Jest and EditorConfig.
+- A sandboxed page (`sandbox.html` / `js/sandbox.js`) that runs the Steem-JS
+  console under Manifest V3, communicating with the popup via `postMessage`.
+- Unit tests for the pure helpers in `js/functions.js`, `js/content.js`,
+  `js/ping.js`, `js/context.js` and `js/sandbox.js`, with an enforced coverage
+  threshold.
+- `npm run build` — produces a Chrome Web Store-ready zip in `dist/`.
+- Continuous integration (GitHub Actions) running lint, format check, tests and a
+  build across Node.js 18, 20 and 22.
+- A release workflow that attaches the packaged zip to tagged GitHub releases.
+- Dependabot configuration for npm and GitHub Actions updates.
+- Project documentation and community health files: `CONTRIBUTING.md`,
+  `CODE_OF_CONDUCT.md`, `SECURITY.md`, `PRIVACY.md`, issue and pull request
+  templates, `CODEOWNERS`, `FUNDING.yml`, `.editorconfig`, `.gitattributes`,
+  `.nvmrc` and an expanded `.gitignore`.
+- A rewritten `README.md` with status badges, a table of contents, a project
+  structure overview and clearer install/usage/build docs.
+
+### Fixed
+
+- `getIdForDiv` now strips **all** dots from an account id (previously only the
+  first), preventing broken element ids for accounts with multiple dots.
+- Several handlers cleared or disabled the wrong element on invalid input — the
+  Your Downvotes tab, the delegators and delegatees tabs, and the witness-lookup
+  Query buttons now target the correct elements (addresses automated review feedback).
+- The node/API ping helper now clears its 5-second timeout once a result arrives,
+  avoiding a needless pending timer.
+- Fixed user-facing typos ("recipents" → "recipients", "evalute" → "evaluate").
+
+### Changed
+
+- Migrated the extension to **Manifest V3**: a background **service worker**
+  (`js/background.js`, which `importScripts` `js/context.js`), the `action` key,
+  `host_permissions`, MV3 `web_accessible_resources` and a compliant
+  content-security policy — so it installs on current Chrome and Edge.
+- Reworked the right-click front-end switcher for MV3: the menus are created in
+  `chrome.runtime.onInstalled` and handled by a single
+  `chrome.contextMenus.onClicked` listener.
+- Bumped the extension version to `1.0.0` and kept `manifest.json` and
+  `package.json` versions in sync (verified by a test).
+
+### Security
+
+- API/SteemSQL error responses are now HTML-escaped and truncated before being
+  rendered, so a failed request's body (for example a Cloudflare challenge page)
+  can no longer inject markup into the popup or trip the content-security policy.
+
+[1.0.0]: https://github.com/DoctorLai/SteemTools/releases/tag/v1.0.0
