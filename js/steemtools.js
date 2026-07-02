@@ -1264,11 +1264,25 @@ document.addEventListener(
         $('div#delegatees_div').html('');
       }
     });
+    let steemjsSandbox = document.getElementById('steemjs-sandbox');
+    let steemjsSandboxWindow = steemjsSandbox && steemjsSandbox.contentWindow;
+    const appendConsoleLog = (msg) => {
+      $('div#consolelog').append(msg + '<BR/>');
+    };
+    window.addEventListener('message', function (event) {
+      if (event.source !== steemjsSandboxWindow) {
+        return;
+      }
+      let data = event.data || {};
+      if (data.type === 'steemtools:sandbox-log') {
+        appendConsoleLog(data.message);
+      }
+    });
     // redirecting console
     console.log = function (x) {
       for (let i = 0; i < arguments.length; i++) {
         let x = arguments[i];
-        $('div#consolelog').append(x + '<BR/>');
+        appendConsoleLog(x);
       }
     };
     // clear
@@ -1288,13 +1302,12 @@ document.addEventListener(
     });
     $('input#btn_run').click(function () {
       let js = $('textarea#steemjs-source').val();
-      try {
-        eval(js);
-      } catch (e) {
-        $('div#consolelog').append('Error: ' + e);
-      } finally {
-        saveSettings(false);
+      if (steemjsSandboxWindow) {
+        steemjsSandboxWindow.postMessage({ type: 'steemtools:run-js', code: js }, '*');
+      } else {
+        appendConsoleLog('Error: Steem-JS sandbox is not available.');
       }
+      saveSettings(false);
     });
     $('input#btn_load').click(function () {
       let curtitle = $('#btn_list_files').val();

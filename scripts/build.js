@@ -21,7 +21,7 @@ const distDir = path.join(root, 'dist');
 const outFile = path.join(distDir, `steem-tools-v${pkg.version}.zip`);
 
 // Standalone files shipped at the root of the package.
-const FILES = ['manifest.json', 'main.html', 'icon.png', 'LICENSE'];
+const FILES = ['manifest.json', 'main.html', 'sandbox.html', 'icon.png', 'LICENSE'];
 
 // Directories shipped recursively, with per-directory ignore globs.
 const DIRECTORIES = {

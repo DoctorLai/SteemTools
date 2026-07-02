@@ -1,3 +1,10 @@
+'use strict';
+
+// MV3 service-worker entry point. The context-menu wiring lives in context.js
+// and is imported here so both modules register their listeners on every
+// service-worker startup.
+importScripts('context.js');
+
 chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
   switch (message.type) {
     case 'console.log':
