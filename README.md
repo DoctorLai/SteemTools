@@ -9,7 +9,7 @@ blockchain & account insights, delegations, downvotes, witness lookup, a Steem-J
 console, a multi-send wallet and more.
 
 [![CI](https://github.com/DoctorLai/SteemTools/actions/workflows/ci.yml/badge.svg)](https://github.com/DoctorLai/SteemTools/actions/workflows/ci.yml)
-[![Node](https://img.shields.io/badge/node-%3E%3D18-brightgreen.svg)](https://nodejs.org)
+[![Node](https://img.shields.io/badge/node-%3E%3D20-brightgreen.svg)](https://nodejs.org)
 [![Manifest V3](https://img.shields.io/badge/manifest-v3-blue.svg)](manifest.json)
 [![Code style: Prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg)](https://prettier.io)
 [![PRs welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
@@ -113,7 +113,7 @@ console, a multi-send wallet and more.
 
 ## Development
 
-The extension is plain HTML/CSS/JavaScript with no bundler. Node.js (>= 18) is only
+The extension is plain HTML/CSS/JavaScript with no bundler. Node.js (>= 20) is only
 required for the development tooling (linting, formatting, tests and packaging).
 
 ```bash
