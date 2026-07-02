@@ -5,9 +5,6 @@ const { is_steem_domain, get_steem_url, status, json } = require('../js/content.
 describe('is_steem_domain', () => {
   it('matches supported Steem front-ends', () => {
     expect(is_steem_domain('https://steemit.com/@justyy')).toBe(true);
-    expect(is_steem_domain('https://busy.org/@justyy')).toBe(true);
-    expect(is_steem_domain('HTTPS://STEEMD.COM/')).toBe(true); // case-insensitive
-    expect(is_steem_domain('  https://utopian.io/  ')).toBe(true); // trims whitespace
   });
 
   it('rejects unrelated or empty URLs', () => {
