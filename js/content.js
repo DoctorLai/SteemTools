@@ -3,9 +3,7 @@
 console.log('SteemTools Content Script Loaded.');
 
 // all supported steem domains
-let steem_websites = [
-  'steemit.com'
-];
+let steem_websites = ['steemit.com'];
 
 // check if url is steem websites
 const is_steem_domain = (url) => {

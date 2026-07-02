@@ -87,4 +87,41 @@ describe('manifest.json', () => {
       expect(exists(path.join('_locales', manifest.default_locale, 'messages.json'))).toBe(true);
     }
   });
+
+  describe('localisation', () => {
+    const localesDir = path.join(root, '_locales');
+    const localeNames = fs
+      .readdirSync(localesDir, { withFileTypes: true })
+      .filter((entry) => entry.isDirectory())
+      .map((entry) => entry.name);
+
+    const readMessages = (locale) =>
+      JSON.parse(fs.readFileSync(path.join(localesDir, locale, 'messages.json'), 'utf8'));
+
+    it('ships at least 25 locales', () => {
+      expect(localeNames.length).toBeGreaterThanOrEqual(25);
+    });
+
+    it('resolves the manifest __MSG_ references from the default locale', () => {
+      const defaults = readMessages(manifest.default_locale);
+      for (const field of ['name', 'description']) {
+        const match = /^__MSG_(.+)__$/.exec(manifest[field]);
+        if (match) {
+          const key = match[1];
+          expect(defaults[key]).toBeDefined();
+          expect(typeof defaults[key].message).toBe('string');
+          expect(defaults[key].message.length).toBeGreaterThan(0);
+        }
+      }
+    });
+
+    it('gives every locale a name and a Web Store-legal description (<=132 chars)', () => {
+      for (const locale of localeNames) {
+        const messages = readMessages(locale);
+        expect(messages.appName && messages.appName.message).toBeTruthy();
+        expect(messages.appDesc && messages.appDesc.message).toBeTruthy();
+        expect(messages.appDesc.message.length).toBeLessThanOrEqual(132);
+      }
+    });
+  });
 });

@@ -1,0 +1,10 @@
+{
+  "appName": {
+    "message": "Steem Tools",
+    "description": "The extension name shown in Chrome and on the Chrome Web Store."
+  },
+  "appDesc": {
+    "message": "Utilidades para usuarios de Steem: datos de cuenta, delegaciones, downvotes, testigos, consola Steem-JS y billetera multienvío.",
+    "description": "The Chrome Web Store description."
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "appName": {
+    "message": "Steem Tools",
+    "description": "The extension name shown in Chrome and on the Chrome Web Store."
+  },
+  "appDesc": {
+    "message": "Steem கருவிகள்: கணக்கு தகவல், டெலிகேஷன், டவுன்வோட், விட்னஸ் தேடல், Steem-JS கன்சோல், பல அனுப்பல் வாலட்.",
+    "description": "The Chrome Web Store description."
+  }
+}

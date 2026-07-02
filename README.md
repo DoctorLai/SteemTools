@@ -84,7 +84,9 @@ console, a multi-send wallet and more.
   (steemit.com, busy.org, steemd.com, steemdb.com, steemhunt.com, …).
 - **Resteems inline** — shows the list of resteems directly on supported Steem post
   pages.
-- **Localised** — English (en, en-GB, en-US) and Chinese (Simplified & Traditional).
+- **Localised** — Chrome Web Store listing translated into 25+ languages (English,
+  Chinese, Spanish, Hindi, Arabic, Portuguese, Russian, Japanese, German, French,
+  Korean and more).
 
 ## Screenshots
 

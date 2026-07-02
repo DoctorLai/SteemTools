@@ -1,10 +1,10 @@
 {
   "appName": {
     "message": "Steem 工具",
-    "description": "Steem 工具."
+    "description": "The extension name shown in Chrome and on the Chrome Web Store."
   },
   "appDesc": {
-    "message": "Steem 工具",
-    "description": "Steem 工具."
+    "message": "Steem 用户实用工具：账户信息、委托、点踩、见证人查询、Steem-JS 控制台和批量转账钱包。",
+    "description": "The Chrome Web Store description."
   }
 }

@@ -1,10 +1,10 @@
 {
   "appName": {
     "message": "Steem Tools",
-    "description": "This is a Chrome Extension that has a few SteemIt Tools."
+    "description": "The extension name shown in Chrome and on the Chrome Web Store."
   },
   "appDesc": {
-    "message": "Steem Tools",
-    "description": "This is a Chrome Extension that has a few SteemIt Tools."
+    "message": "Handy tools for Steem users: account insights, delegations, downvotes, witness lookup, a Steem-JS console and a multi-send wallet.",
+    "description": "The Chrome Web Store description."
   }
 }

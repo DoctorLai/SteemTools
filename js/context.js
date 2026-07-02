@@ -1,9 +1,7 @@
 'use strict';
 
 // all supported steem domains
-let steem_websites = [
-  'steemit.com'
-];
+let steem_websites = ['steemit.com'];
 
 // Each "switch to" child menu stores its target domain in the item id, so the
 // single onClicked listener below can recover it (MV3 dropped per-item onclick).
