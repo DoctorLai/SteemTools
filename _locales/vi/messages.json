@@ -1,0 +1,10 @@
+{
+  "appName": {
+    "message": "Steem Tools",
+    "description": "The extension name shown in Chrome and on the Chrome Web Store."
+  },
+  "appDesc": {
+    "message": "Công cụ cho người dùng Steem: thông tin tài khoản, ủy quyền, downvote, tra cứu witness, console Steem-JS và ví gửi hàng loạt.",
+    "description": "The Chrome Web Store description."
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "appName": {
+    "message": "Steem Tools",
+    "description": "The extension name shown in Chrome and on the Chrome Web Store."
+  },
+  "appDesc": {
+    "message": "Steem-এর টুল: অ্যাকাউন্ট তথ্য, ডেলিগেশন, ডাউনভোট, উইটনেস অনুসন্ধান, Steem-JS কনসোল ও মাল্টি-সেন্ড ওয়ালেট।",
+    "description": "The Chrome Web Store description."
+  }
+}

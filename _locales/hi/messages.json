@@ -1,0 +1,10 @@
+{
+  "appName": {
+    "message": "Steem Tools",
+    "description": "The extension name shown in Chrome and on the Chrome Web Store."
+  },
+  "appDesc": {
+    "message": "Steem के लिए उपयोगी टूल: अकाउंट जानकारी, डेलिगेशन, डाउनवोट, विटनेस खोज, Steem-JS कंसोल और मल्टी-सेंड वॉलेट।",
+    "description": "The Chrome Web Store description."
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "appName": {
+    "message": "Steem Tools",
+    "description": "The extension name shown in Chrome and on the Chrome Web Store."
+  },
+  "appDesc": {
+    "message": "Steem 사용자를 위한 유용한 도구: 계정 정보, 위임, 다운보트, 증인 조회, Steem-JS 콘솔, 다중 전송 지갑.",
+    "description": "The Chrome Web Store description."
+  }
+}
