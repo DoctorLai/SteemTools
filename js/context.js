@@ -2,14 +2,7 @@
 
 // all supported steem domains
 let steem_websites = [
-  'steemit.com',
-  'staging.busy.org',
-  'busy.org',
-  'steemd.com',
-  'steemdb.com',
-  'steemhunt.com',
-  'mspsteem.com',
-  'utopian.io',
+  'steemit.com'
 ];
 
 // Each "switch to" child menu stores its target domain in the item id, so the

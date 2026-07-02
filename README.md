@@ -4,7 +4,7 @@
 
 # Steem Tools
 
-**A Chrome extension packed with handy tools for [Steem](https://steem.com) users** —
+**A Chrome extension packed with handy tools for [Steem](https://steemyy.com) users** —
 blockchain & account insights, delegations, downvotes, witness lookup, a Steem-JS
 console, a multi-send wallet and more.
 
@@ -24,7 +24,7 @@ console, a multi-send wallet and more.
 [![Open PRs](https://img.shields.io/github/issues-pr/DoctorLai/SteemTools.svg)](https://github.com/DoctorLai/SteemTools/pulls)
 [![Stars](https://img.shields.io/github/stars/DoctorLai/SteemTools.svg)](https://github.com/DoctorLai/SteemTools/stargazers)
 [![Forks](https://img.shields.io/github/forks/DoctorLai/SteemTools.svg)](https://github.com/DoctorLai/SteemTools/network/members)
-[![Watchers](https://img.shields.io/github/watchers/DoctorLai/SteemTools.svg)](https://github.com/DoctorLai/SteemTools/watchers)
+[![Watchers](https://img.shields.io/github/watchers/DoctorLai/SteemTools)](https://github.com/DoctorLai/SteemTools/watchers)
 
 [![Chrome Web Store](https://img.shields.io/chrome-web-store/v/emjfpeecopppojbhkigjjmcahbfahhbn?label=web%20store)](https://chrome.google.com/webstore/detail/steem-tools/emjfpeecopppojbhkigjjmcahbfahhbn)
 [![Users](https://img.shields.io/chrome-web-store/users/emjfpeecopppojbhkigjjmcahbfahhbn?label=users)](https://chrome.google.com/webstore/detail/steem-tools/emjfpeecopppojbhkigjjmcahbfahhbn)
@@ -203,8 +203,8 @@ our [Code of Conduct](CODE_OF_CONDUCT.md).
 
 If you find Steem Tools useful, consider supporting the author:
 
-- 💜 [PayPal](https://www.paypal.me/doctorlai)
-- ₿ [Bitcoin](https://justyy.com/out/bitcoin)
+- 💜 [PayPal](https://www.paypal.me/doctorlai/5)
+- ₿ [Bitcoin](https://buymeacoffee.com/y0btg5r/crypto-payment-accepted)
 - ☁️ Referral links for [Vultr](https://justyy.com/out/vultr2) and
   [Linode](https://justyy.com/out/linode) VPS
 
