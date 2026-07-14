@@ -15,6 +15,8 @@ const {
   validateResponse,
   escapeHtml,
   isNumeric,
+  storageKey,
+  formatVersion,
 } = require('../js/functions.js');
 
 function setUserAgent(ua) {
@@ -175,5 +177,38 @@ describe('textPressEnterButtonClick', () => {
 
     handler({ keyCode: 65 });
     expect(button.click).toHaveBeenCalledTimes(1);
+  });
+});
+
+describe('storageKey', () => {
+  it('namespaces keys with the app prefix', () => {
+    expect(storageKey('active_tab')).toBe('steemtools:active_tab');
+  });
+
+  it('keeps an already-prefixed value distinct', () => {
+    expect(storageKey('')).toBe('steemtools:');
+    expect(storageKey('a')).not.toBe(storageKey('b'));
+  });
+});
+
+describe('formatVersion', () => {
+  it('formats a date and commit (the GitHub Pages case)', () => {
+    expect(formatVersion({ date: '2026-07-13', commit: '054ffe1' })).toBe('2026-07-13 (054ffe1)');
+  });
+
+  it('includes the semantic version when provided', () => {
+    expect(formatVersion({ version: '1.1.0', date: '2026-07-14', commit: '054ffe1' })).toBe(
+      'v1.1.0 · 2026-07-14 (054ffe1)'
+    );
+  });
+
+  it('omits a missing or placeholder commit', () => {
+    expect(formatVersion({ version: '1.1.0' })).toBe('v1.1.0');
+    expect(formatVersion({ date: '2026-07-14', commit: 'dev' })).toBe('2026-07-14');
+  });
+
+  it('returns an empty string when nothing is known', () => {
+    expect(formatVersion({})).toBe('');
+    expect(formatVersion()).toBe('');
   });
 });

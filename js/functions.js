@@ -105,6 +105,31 @@ const isNumeric = (n) => {
   return !isNaN(parseFloat(n)) && isFinite(n);
 };
 
+// localStorage keys are namespaced with the app's short name to avoid clashing
+// with anything else stored on the same origin (e.g. the GitHub Pages preview).
+const STORAGE_PREFIX = 'steemtools:';
+const storageKey = (name) => STORAGE_PREFIX + name;
+
+// build a human-readable version label, e.g. "2026-07-14 (054ffe1)" or
+// "v1.1.0 · 2026-07-14 (054ffe1)" when a semantic version is provided. A missing
+// or placeholder ("dev") commit is omitted.
+const formatVersion = (info) => {
+  info = info || {};
+  const segments = [];
+  if (info.version) {
+    segments.push('v' + String(info.version).trim());
+  }
+  if (info.date) {
+    segments.push(String(info.date).trim());
+  }
+  let label = segments.join(' · ');
+  const commit = info.commit == null ? '' : String(info.commit).trim();
+  if (commit && commit !== 'dev') {
+    label = label ? label + ' (' + commit + ')' : '(' + commit + ')';
+  }
+  return label;
+};
+
 // Expose the pure helpers to Node-based tooling (e.g. Jest) without affecting the
 // browser runtime, where `module` is undefined and this block is simply skipped.
 if (typeof module !== 'undefined' && module.exports) {
@@ -123,5 +148,7 @@ if (typeof module !== 'undefined' && module.exports) {
     validateResponse,
     escapeHtml,
     isNumeric,
+    storageKey,
+    formatVersion,
   };
 }

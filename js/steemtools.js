@@ -3,8 +3,8 @@
 // default api node
 const default_node = 'https://api.steemit.com';
 steem.api.setOptions({ url: default_node });
-// default server
-const default_server = 'helloacm.com';
+// default API server (Steem Tools API is served from a Cloudflare Worker)
+const default_server = 'api.justyy.workers.dev';
 
 // steem js sources;
 let steemjs_files = {};
@@ -381,7 +381,7 @@ const handleAccountWitness = () => {
             let s =
               '<h4><B>' +
               result.length +
-              '</B> Witnesses (Your Votes) - <a target=_blank href="https://helloacm.com/tools/steemit/witness/?id=' +
+              '</B> Witnesses (Your Votes) - <a target=_blank href="https://steemyy.com/witness/?id=' +
               id +
               '">View Complete Data</a></h4>';
             s += '<table id="dvlist_witness2" class="sortable">';
@@ -401,7 +401,7 @@ const handleAccountWitness = () => {
               s +=
                 '<td>' +
                 status +
-                ' (<a rel="nofollow" target=_blank href="https://helloacm.com/api/echo/?s=' +
+                ' (<a rel="nofollow" target=_blank href="https://api.justyy.workers.dev/api/echo/?s=' +
                 result[i]['signing_key'] +
                 '" title="' +
                 result[i]['signing_key'] +
@@ -623,7 +623,7 @@ document.addEventListener(
     $(function () {
       let tabs = $('#tabs').tabs();
       try {
-        let key = 'steemtools_active_tab';
+        let key = storageKey('active_tab');
         let saved = parseInt(localStorage.getItem(key), 10);
         let count = tabs.find('> ul > li').length;
         if (!isNaN(saved) && saved >= 0 && saved < count) {
@@ -773,6 +773,29 @@ document.addEventListener(
     $('textarea#about').val(
       'Application: ' + app_name + '\n' + 'Chrome Version: ' + getChromeVersion()
     );
+    // show the build version (semver · date · commit) in the popup footer
+    try {
+      let vinfo = (typeof window !== 'undefined' && window.__STEEMTOOLS_VERSION__) || {};
+      let vlabel = formatVersion({
+        version: vinfo.version || manifest.version,
+        date: vinfo.date,
+        commit: vinfo.commit,
+      });
+      if (vlabel) {
+        $('#app-version').text('Version: ' + vlabel);
+      }
+    } catch {
+      /* version display is best-effort; never block popup init */
+    }
+    // When opened as a static preview (e.g. the GitHub Pages demo) rather than as
+    // the installed extension, warn against entering real private keys, which the
+    // shim would persist to localStorage on the hosting origin.
+    if (!(chrome.runtime && chrome.runtime.id)) {
+      $('#app-version').before(
+        '<div class="preview-warning">⚠️ Live preview — do not enter real private keys here. ' +
+          'Install the extension for full, secure functionality.</div>'
+      );
+    }
     // rep calculator
     $('button#btn_rep').click(function () {
       let rep = parseInt($('input#steemit_reputation').val());

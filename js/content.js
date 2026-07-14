@@ -47,7 +47,7 @@ if (is_steem_domain(url)) {
     let permlink = pat[3];
     if (id && permlink) {
       let api =
-        'https://uploadbeta.com/api/steemit/simple-reblog/?cached&id=' +
+        'https://api.justyy.workers.dev/api/steemit/simple-reblog/?cached&id=' +
         id +
         '&permlink=' +
         permlink;

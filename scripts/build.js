@@ -14,6 +14,7 @@
 const fs = require('fs');
 const path = require('path');
 const archiver = require('archiver');
+const { generate } = require('./gen-version');
 
 const root = path.resolve(__dirname, '..');
 const pkg = require(path.join(root, 'package.json'));
@@ -33,6 +34,9 @@ const DIRECTORIES = {
 };
 
 function main() {
+  // Embed fresh build metadata (js/version.js) into the package.
+  generate();
+
   fs.mkdirSync(distDir, { recursive: true });
   if (fs.existsSync(outFile)) {
     fs.unlinkSync(outFile);

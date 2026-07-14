@@ -1,6 +1,6 @@
 # Privacy Policy
 
-_Last updated: 2026_
+_Last updated: 2026-07-14_
 
 Steem Tools is an open-source browser extension. This document explains what data
 the extension handles and where it goes. The source code is available for review in
@@ -20,6 +20,11 @@ available whenever you open the popup. This may include:
 This data is stored by your browser (and synced to your Google account if Chrome
 Sync is enabled). It is **not** sent to the extension author.
 
+When the popup is opened as a **static preview** (for example the GitHub Pages demo)
+instead of as the installed extension, these preferences are kept in the page's
+`localStorage` on the hosting origin rather than in `storage.sync`. The preview is
+for demonstration only — **do not enter real private keys** there.
+
 ## Private keys
 
 When you use the wallet or delegation features, your private key is used **locally**
@@ -37,8 +42,8 @@ including:
 
 - Public Steem RPC nodes (configurable in _Settings_), for example
   `https://api.steemit.com`.
-- Steem Tools helper APIs operated by the author (for example `helloacm.com`,
-  `uploadbeta.com`) to fetch aggregated data such as delegators, downvotes,
+- A Steem Tools helper API operated by the author (`api.justyy.workers.dev`, a
+  Cloudflare Worker) to fetch aggregated data such as delegators, downvotes,
   witnesses and deleted comments. These requests include the Steem account id you
   are querying.
 - Public avatar/board images (for example `steemitboard.com`).

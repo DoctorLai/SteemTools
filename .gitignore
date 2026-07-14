@@ -8,6 +8,10 @@ dist/
 # Test & coverage output
 coverage/
 *.lcov
+report.json
+
+# Generated badge (published to the 'badges' branch by CI, not committed to main)
+.github/badges/
 
 # Logs
 *.log

@@ -40,6 +40,7 @@ the vendored libraries are ignored (see `.prettierignore` and `eslint.config.js`
 | `npm test`              | Run the Jest unit tests                             |
 | `npm run test:coverage` | Run the tests and enforce the coverage threshold    |
 | `npm run check`         | Lint + format check + tested coverage (the CI gate) |
+| `npm run gen:version`   | Regenerate `js/version.js` build metadata           |
 | `npm run build`         | Produce a Web Store-ready zip in `dist/`            |
 
 ### Loading the extension locally

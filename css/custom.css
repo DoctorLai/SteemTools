@@ -128,3 +128,67 @@ textarea{
 .console {background: black; color: yellow;}
 #consolelog {color:white ;background:black;}    
 div.inline-div {display: inline-block;}
+
+/* Build/version footer shown at the bottom of the popup. */
+.app-version {
+    margin-top: 8px;
+    padding: 4px 2px;
+    font-size: 11px;
+    color: #888;
+    text-align: center;
+}
+
+/* Shown only on the static preview (GitHub Pages), warning against real keys. */
+.preview-warning {
+    margin: 8px 0;
+    padding: 8px 12px;
+    border: 1px solid #e0a800;
+    border-radius: 4px;
+    background: #fff3cd;
+    color: #7a5c00;
+    font-weight: bold;
+    text-align: center;
+}
+
+/* Dark mode: follow the OS/browser colour scheme.
+   As requested, links are yellow for contrast against the dark background. */
+@media (prefers-color-scheme: dark) {
+    body {
+        background-color: #121212;
+        color: #e0e0e0;
+    }
+    a,
+    a:link,
+    a:visited {
+        color: yellow;
+    }
+    a:hover,
+    a:focus {
+        color: #ffe066;
+    }
+    .app-version {
+        color: #aaaaaa;
+    }
+    .preview-warning {
+        background: #3a2f00;
+        border-color: #7a5c00;
+        color: #ffe066;
+    }
+    table {
+        border-color: #333;
+    }
+    table tr {
+        background: #1a1a1a;
+        border-color: #333;
+    }
+    table.sortable thead {
+        background-color: #1e1e1e;
+        color: #cfcfcf;
+    }
+    table.sortable tbody tr:nth-child(2n) td {
+        background: #1a1a1a;
+    }
+    table.sortable tbody tr:nth-child(2n + 1) td {
+        background: #242424;
+    }
+}

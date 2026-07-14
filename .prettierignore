@@ -4,6 +4,9 @@ dist/
 coverage/
 package-lock.json
 
+# Generated at build time (see scripts/gen-version.js)
+js/version.js
+
 # Vendored assets (not ours to reformat)
 bs/
 css/

@@ -20,6 +20,7 @@ console, a multi-send wallet and more.
 [![Commit activity](https://img.shields.io/github/commit-activity/m/DoctorLai/SteemTools.svg)](https://github.com/DoctorLai/SteemTools/commits)
 [![Repo size](https://img.shields.io/github/repo-size/DoctorLai/SteemTools.svg)](https://github.com/DoctorLai/SteemTools)
 [![Top language](https://img.shields.io/github/languages/top/DoctorLai/SteemTools.svg)](https://github.com/DoctorLai/SteemTools)
+[![JavaScript](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/DoctorLai/SteemTools/badges/javascript.json)](https://github.com/DoctorLai/SteemTools/search?l=javascript)
 [![Open issues](https://img.shields.io/github/issues/DoctorLai/SteemTools.svg)](https://github.com/DoctorLai/SteemTools/issues)
 [![Open PRs](https://img.shields.io/github/issues-pr/DoctorLai/SteemTools.svg)](https://github.com/DoctorLai/SteemTools/pulls)
 [![Stars](https://img.shields.io/github/stars/DoctorLai/SteemTools.svg)](https://github.com/DoctorLai/SteemTools/stargazers)
@@ -136,6 +137,7 @@ npm run build
 | `npm test`              | Run the Jest unit tests                             |
 | `npm run test:coverage` | Run the tests and enforce the coverage threshold    |
 | `npm run check`         | Lint + format check + tested coverage (the CI gate) |
+| `npm run gen:version`   | Regenerate `js/version.js` build metadata           |
 | `npm run build`         | Produce a Web Store-ready zip in `dist/`            |
 
 Unit tests live in `tests/` and cover the pure helpers in `js/functions.js`,
@@ -164,8 +166,13 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for the full workflow.
 │   ├── sandbox.js     # Steem-JS console runner for the sandboxed page (unit-tested)
 │   ├── ping.js        # latency helper (unit-tested)
 │   ├── steemtools.js  # popup logic
+│   ├── chrome-shim.js # chrome.* stand-ins so the popup runs on the Pages preview
+│   ├── version.js     # generated build metadata (see scripts/gen-version.js)
 │   └── *.min.js …     # vendored libraries (jQuery, steem.js, Chart.js, …)
-├── scripts/build.js   # packages the extension into dist/*.zip
+├── scripts/
+│   ├── build.js       # packages the extension into dist/*.zip
+│   ├── gen-version.js # writes js/version.js (version · date · commit)
+│   └── lang-badge.js  # writes the dynamic JavaScript-percentage badge
 └── tests/             # Jest unit tests
 ```
 
@@ -203,10 +210,14 @@ our [Code of Conduct](CODE_OF_CONDUCT.md).
 
 ## Support
 
+Need help or found a bug? See [SUPPORT.md](SUPPORT.md) for how to get help and file
+a good issue.
+
 If you find Steem Tools useful, consider supporting the author:
 
 - 💜 [PayPal](https://www.paypal.me/doctorlai/5)
 - ₿ [Bitcoin](https://buymeacoffee.com/y0btg5r/crypto-payment-accepted)
+- 🗳️ Vote [@justyy as a Steem witness](https://steemyy.com/witness/?id=justyy)
 - ☁️ Referral links for [Vultr](https://justyy.com/out/vultr2) and
   [Linode](https://justyy.com/out/linode) VPS
 
