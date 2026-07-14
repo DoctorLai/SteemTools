@@ -4,5 +4,5 @@
 window.__STEEMTOOLS_VERSION__ = {
   "version": "1.1.0",
   "date": "2026-07-14",
-  "commit": "7ad2867"
+  "commit": "010a7f4"
 };
