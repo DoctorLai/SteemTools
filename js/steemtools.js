@@ -787,15 +787,6 @@ document.addEventListener(
     } catch {
       /* version display is best-effort; never block popup init */
     }
-    // When opened as a static preview (e.g. the GitHub Pages demo) rather than as
-    // the installed extension, warn against entering real private keys, which the
-    // shim would persist to localStorage on the hosting origin.
-    if (!(chrome.runtime && chrome.runtime.id)) {
-      $('#app-version').before(
-        '<div class="preview-warning">⚠️ Live preview — do not enter real private keys here. ' +
-          'Install the extension for full, secure functionality.</div>'
-      );
-    }
     // rep calculator
     $('button#btn_rep').click(function () {
       let rep = parseInt($('input#steemit_reputation').val());

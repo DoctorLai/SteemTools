@@ -20,11 +20,6 @@ available whenever you open the popup. This may include:
 This data is stored by your browser (and synced to your Google account if Chrome
 Sync is enabled). It is **not** sent to the extension author.
 
-When the popup is opened as a **static preview** (for example the GitHub Pages demo)
-instead of as the installed extension, these preferences are kept in the page's
-`localStorage` on the hosting origin rather than in `storage.sync`. The preview is
-for demonstration only — **do not enter real private keys** there.
-
 ## Private keys
 
 When you use the wallet or delegation features, your private key is used **locally**

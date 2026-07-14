@@ -166,7 +166,6 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for the full workflow.
 │   ├── sandbox.js     # Steem-JS console runner for the sandboxed page (unit-tested)
 │   ├── ping.js        # latency helper (unit-tested)
 │   ├── steemtools.js  # popup logic
-│   ├── chrome-shim.js # chrome.* stand-ins so the popup runs on the Pages preview
 │   ├── version.js     # generated build metadata (see scripts/gen-version.js)
 │   └── *.min.js …     # vendored libraries (jQuery, steem.js, Chart.js, …)
 ├── scripts/

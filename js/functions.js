@@ -106,7 +106,7 @@ const isNumeric = (n) => {
 };
 
 // localStorage keys are namespaced with the app's short name to avoid clashing
-// with anything else stored on the same origin (e.g. the GitHub Pages preview).
+// with anything else stored on the same origin.
 const STORAGE_PREFIX = 'steemtools:';
 const storageKey = (name) => STORAGE_PREFIX + name;
 

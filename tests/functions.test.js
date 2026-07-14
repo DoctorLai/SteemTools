@@ -192,7 +192,7 @@ describe('storageKey', () => {
 });
 
 describe('formatVersion', () => {
-  it('formats a date and commit (the GitHub Pages case)', () => {
+  it('formats a date and commit', () => {
     expect(formatVersion({ date: '2026-07-13', commit: '054ffe1' })).toBe('2026-07-13 (054ffe1)');
   });
 

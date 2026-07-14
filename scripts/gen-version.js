@@ -3,7 +3,7 @@
 
 /**
  * Generates `js/version.js`, which exposes the current build metadata to the popup
- * and the GitHub Pages preview via `window.__STEEMTOOLS_VERSION__`.
+ * via `window.__STEEMTOOLS_VERSION__`.
  *
  * The metadata is the semantic version (from package.json), the build date and the
  * short git commit. On GitHub Actions the commit is taken from `GITHUB_SHA`.
