@@ -185,7 +185,7 @@ describe('storageKey', () => {
     expect(storageKey('active_tab')).toBe('steemtools:active_tab');
   });
 
-  it('keeps an already-prefixed value distinct', () => {
+  it('prefixes an empty name and keeps distinct names distinct', () => {
     expect(storageKey('')).toBe('steemtools:');
     expect(storageKey('a')).not.toBe(storageKey('b'));
   });

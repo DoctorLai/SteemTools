@@ -381,8 +381,8 @@ const handleAccountWitness = () => {
             let s =
               '<h4><B>' +
               result.length +
-              '</B> Witnesses (Your Votes) - <a target=_blank href="https://steemyy.com/witness/?id=' +
-              id +
+              '</B> Witnesses (Your Votes) - <a target=_blank rel="noopener noreferrer" href="https://steemyy.com/witness/?id=' +
+              encodeURIComponent(id) +
               '">View Complete Data</a></h4>';
             s += '<table id="dvlist_witness2" class="sortable">';
             s +=
@@ -401,8 +401,8 @@ const handleAccountWitness = () => {
               s +=
                 '<td>' +
                 status +
-                ' (<a rel="nofollow" target=_blank href="https://api.justyy.workers.dev/api/echo/?s=' +
-                result[i]['signing_key'] +
+                ' (<a rel="nofollow noopener noreferrer" target=_blank href="https://api.justyy.workers.dev/api/echo/?s=' +
+                encodeURIComponent(result[i]['signing_key']) +
                 '" title="' +
                 result[i]['signing_key'] +
                 '">Signing Key</a>)</td>';

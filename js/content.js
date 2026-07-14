@@ -48,9 +48,9 @@ if (is_steem_domain(url)) {
     if (id && permlink) {
       let api =
         'https://api.justyy.workers.dev/api/steemit/simple-reblog/?cached&id=' +
-        id +
+        encodeURIComponent(id) +
         '&permlink=' +
-        permlink;
+        encodeURIComponent(permlink);
       console.log(api);
       fetch(api)
         .then(status)
