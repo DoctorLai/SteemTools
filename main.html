@@ -21,6 +21,7 @@
     <link rel="stylesheet" href="css/jquery-ui.css" />
     <link rel="stylesheet" href="css/custom.css" />
     <script src="js/ping.js"></script>   
+    <script src="js/version.js"></script>
     <script src="js/functions.js"></script>
     <script src="js/steemtools.js"></script>    
     <script src="js/jquery-ui.js"></script> 
@@ -158,12 +159,7 @@
         <p>
           <h4>Steem Tools API Servers</h4>
           <select id='server' class='form-control'>
-            <option value='helloacm.com'>New York, USA</option>
-            <option value='uploadbeta.com'>London, UK</option>
-            <option value='steakovercooked.com'>Fremont, USA</option>
-            <option value='happyukgo.com'>Tokyo, Japan</option>
-            <option value='anothervps.com'>Frankurt, Germany</option>
-            <option value='isvbscriptdead.com'>Vancouver, Canada</option>
+            <option value='api.justyy.workers.dev'>CloudFlare Worker</option>
           </select>
         </p>
         <p>
@@ -291,5 +287,6 @@ steem.api.getAccounts(['justyy', 'mkt'], function(err, result) {
         <a target=_blank href='https://justyy.com/out/linode'><img title='Free $20 VPS' src='images/linode.jpg' class='banner'></a>                       
       </div>            
     </div>
+    <div id="app-version" class="app-version"></div>
   </body>
 </html>

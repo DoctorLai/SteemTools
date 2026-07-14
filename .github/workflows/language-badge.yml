@@ -1,0 +1,66 @@
+name: Language badge
+
+# Keeps the dynamic "JavaScript %" README badge up to date. It reads the repository
+# language breakdown from the GitHub API and publishes a shields.io endpoint badge to
+# a dedicated orphan `badges` branch (main is protected), which the README references.
+
+on:
+  push:
+    branches: [master, main]
+  schedule:
+    - cron: '0 3 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  javascript-percentage:
+    name: Update JavaScript percentage badge
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Use Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 22.x
+
+      - name: Generate badge
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -o pipefail
+          gh api "repos/${{ github.repository }}/languages" | node scripts/lang-badge.js
+
+      - name: Publish to the badges branch
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          tmp="$(mktemp -d)"
+          cp .github/badges/javascript.json "$tmp/javascript.json"
+
+          pub="$(mktemp -d)"
+          cd "$pub"
+          git init -q
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git remote add origin "https://x-access-token:${GH_TOKEN}@github.com/${{ github.repository }}.git"
+
+          if git ls-remote --exit-code --heads origin badges >/dev/null 2>&1; then
+            git fetch -q origin badges:badges
+            git checkout -q badges
+          else
+            git checkout -q --orphan badges
+          fi
+
+          cp "$tmp/javascript.json" javascript.json
+          git add javascript.json
+          if git diff --cached --quiet; then
+            echo "JavaScript badge already up to date."
+          else
+            git commit -q -m "chore(badge): update JavaScript percentage [skip ci]"
+            git push -q origin badges
+          fi

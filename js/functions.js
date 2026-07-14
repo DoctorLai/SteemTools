@@ -43,7 +43,15 @@ const textPressEnterButtonClick = (text, button) => {
 
 // get steem profile url given id
 const getSteemUrl = (id) => {
-  return "<a target=_blank href='https://steemit.com/@" + id + "'>@" + id + '</a>';
+  const value = String(id);
+  const encoded = encodeURIComponent(value).replace(/'/g, '%27');
+  return (
+    "<a target=_blank rel='noopener noreferrer' href='https://steemit.com/@" +
+    encoded +
+    "'>@" +
+    escapeHtml(value) +
+    '</a>'
+  );
 };
 
 // get chrome version
@@ -100,9 +108,56 @@ const escapeHtml = (unsafe) => {
     .replace(/'/g, '&#039;');
 };
 
+const safeExternalUrl = (value) => {
+  try {
+    const url = new URL(String(value));
+    return url.protocol === 'https:' || url.protocol === 'http:' ? url.href : '#';
+  } catch {
+    return '#';
+  }
+};
+
 // test if numbers
 const isNumeric = (n) => {
   return !isNaN(parseFloat(n)) && isFinite(n);
+};
+
+// localStorage keys are namespaced with the app's short name to avoid clashing
+// with anything else stored on the same origin.
+const STORAGE_PREFIX = 'steemtools:';
+const storageKey = (name) => STORAGE_PREFIX + name;
+
+const readNamespacedStorage = (storage, name, legacyKey) => {
+  const key = storageKey(name);
+  let value = storage.getItem(key);
+  if (value === null && legacyKey) {
+    value = storage.getItem(legacyKey);
+    if (value !== null) {
+      storage.setItem(key, value);
+      storage.removeItem(legacyKey);
+    }
+  }
+  return value;
+};
+
+// build a human-readable version label, e.g. "2026-07-14 (054ffe1)" or
+// "v1.1.0 · 2026-07-14 (054ffe1)" when a semantic version is provided. A missing
+// or placeholder ("dev") commit is omitted.
+const formatVersion = (info) => {
+  info = info || {};
+  const segments = [];
+  if (info.version) {
+    segments.push('v' + String(info.version).trim());
+  }
+  if (info.date) {
+    segments.push(String(info.date).trim());
+  }
+  let label = segments.join(' · ');
+  const commit = info.commit == null ? '' : String(info.commit).trim();
+  if (commit && commit !== 'dev') {
+    label = label ? label + ' (' + commit + ')' : '(' + commit + ')';
+  }
+  return label;
 };
 
 // Expose the pure helpers to Node-based tooling (e.g. Jest) without affecting the
@@ -122,6 +177,10 @@ if (typeof module !== 'undefined' && module.exports) {
     readResponseAsJSON,
     validateResponse,
     escapeHtml,
+    safeExternalUrl,
     isNumeric,
+    storageKey,
+    readNamespacedStorage,
+    formatVersion,
   };
 }

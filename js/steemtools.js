@@ -3,8 +3,8 @@
 // default api node
 const default_node = 'https://api.steemit.com';
 steem.api.setOptions({ url: default_node });
-// default server
-const default_server = 'helloacm.com';
+// default API server (Steem Tools API is served from a Cloudflare Worker)
+const default_server = 'api.justyy.workers.dev';
 
 // steem js sources;
 let steemjs_files = {};
@@ -381,8 +381,8 @@ const handleAccountWitness = () => {
             let s =
               '<h4><B>' +
               result.length +
-              '</B> Witnesses (Your Votes) - <a target=_blank href="https://helloacm.com/tools/steemit/witness/?id=' +
-              id +
+              '</B> Witnesses (Your Votes) - <a target=_blank rel="noopener noreferrer" href="https://steemyy.com/witness/?id=' +
+              encodeURIComponent(id) +
               '">View Complete Data</a></h4>';
             s += '<table id="dvlist_witness2" class="sortable">';
             s +=
@@ -390,21 +390,24 @@ const handleAccountWitness = () => {
             for (let i = 0; i < result.length; i++) {
               s += '<tr>';
               s += '<td>' + getSteemUrl(result[i]['name']) + ' <BR/>(';
-              s += '<a rel=nofollow target=_blank href="' + result[i]['url'] + '">Post</a>)</td>';
+              s +=
+                '<a rel="nofollow noopener noreferrer" target=_blank href="' +
+                escapeHtml(safeExternalUrl(result[i]['url'])) +
+                '">Post</a>)</td>';
               let status = "<font color='green'>Yes</font>";
               if (result[i]['signing_key'].includes('1111111111')) {
                 status =
-                  "<font color='red'>No</font><BR/><a target=_blank rel=nofollow href='https://steemconnect.com/sign/account_witness_vote?approve=0&witness=" +
-                  result[i]['name'] +
+                  "<font color='red'>No</font><BR/><a target=_blank rel='nofollow noopener noreferrer' href='https://steemconnect.com/sign/account_witness_vote?approve=0&witness=" +
+                  encodeURIComponent(result[i]['name']).replace(/'/g, '%27') +
                   "'><font color=red><B>Unvote</B></font></a>";
               }
               s +=
                 '<td>' +
                 status +
-                ' (<a rel="nofollow" target=_blank href="https://helloacm.com/api/echo/?s=' +
-                result[i]['signing_key'] +
+                ' (<a rel="nofollow noopener noreferrer" target=_blank href="https://api.justyy.workers.dev/api/echo/?s=' +
+                encodeURIComponent(result[i]['signing_key']) +
                 '" title="' +
-                result[i]['signing_key'] +
+                escapeHtml(String(result[i]['signing_key'])) +
                 '">Signing Key</a>)</td>';
               s += '<td>' + Math.round(result[i]['votes'] / 1000000000000) + '</td>';
               s += '<td>' + result[i]['votes_count'] + '</td>';
@@ -623,8 +626,11 @@ document.addEventListener(
     $(function () {
       let tabs = $('#tabs').tabs();
       try {
-        let key = 'steemtools_active_tab';
-        let saved = parseInt(localStorage.getItem(key), 10);
+        let key = storageKey('active_tab');
+        let saved = parseInt(
+          readNamespacedStorage(localStorage, 'active_tab', 'steemtools_active_tab'),
+          10
+        );
         let count = tabs.find('> ul > li').length;
         if (!isNaN(saved) && saved >= 0 && saved < count) {
           tabs.tabs('option', 'active', saved);
@@ -773,6 +779,20 @@ document.addEventListener(
     $('textarea#about').val(
       'Application: ' + app_name + '\n' + 'Chrome Version: ' + getChromeVersion()
     );
+    // show the build version (semver · date · commit) in the popup footer
+    try {
+      let vinfo = (typeof window !== 'undefined' && window.__STEEMTOOLS_VERSION__) || {};
+      let vlabel = formatVersion({
+        version: vinfo.version || manifest.version,
+        date: vinfo.date,
+        commit: vinfo.commit,
+      });
+      if (vlabel) {
+        $('#app-version').text('Version: ' + vlabel);
+      }
+    } catch {
+      /* version display is best-effort; never block popup init */
+    }
     // rep calculator
     $('button#btn_rep').click(function () {
       let rep = parseInt($('input#steemit_reputation').val());

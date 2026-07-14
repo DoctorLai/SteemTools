@@ -1,6 +1,6 @@
 # Privacy Policy
 
-_Last updated: 2026_
+_Last updated: 2026-07-14_
 
 Steem Tools is an open-source browser extension. This document explains what data
 the extension handles and where it goes. The source code is available for review in
@@ -37,8 +37,8 @@ including:
 
 - Public Steem RPC nodes (configurable in _Settings_), for example
   `https://api.steemit.com`.
-- Steem Tools helper APIs operated by the author (for example `helloacm.com`,
-  `uploadbeta.com`) to fetch aggregated data such as delegators, downvotes,
+- A Steem Tools helper API operated by the author (`api.justyy.workers.dev`, a
+  Cloudflare Worker) to fetch aggregated data such as delegators, downvotes,
   witnesses and deleted comments. These requests include the Steem account id you
   are querying.
 - Public avatar/board images (for example `steemitboard.com`).

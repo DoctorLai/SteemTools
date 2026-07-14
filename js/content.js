@@ -7,23 +7,28 @@ let steem_websites = ['steemit.com'];
 
 // check if url is steem websites
 const is_steem_domain = (url) => {
-  let x = steem_websites.length;
   if (!url) {
     return false;
   }
-  url = url.trim().toLowerCase();
-  for (let i = 0; i < x; ++i) {
-    let cur = steem_websites[i];
-    if (url.includes(cur)) {
-      return true;
-    }
+  try {
+    const hostname = new URL(url.trim()).hostname.toLowerCase();
+    return steem_websites.some((domain) => hostname === domain || hostname.endsWith('.' + domain));
+  } catch {
+    return false;
   }
-  return false;
 };
 
 // return a steem profile url
 const get_steem_url = (id) => {
-  return "<a href='https://steemit.com/@" + id + "'>@" + id + '</a>';
+  const value = String(id);
+  const encoded = encodeURIComponent(value).replace(/'/g, '%27');
+  const escaped = value
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+  return "<a href='https://steemit.com/@" + encoded + "'>@" + escaped + '</a>';
 };
 
 function status(response) {
@@ -47,10 +52,10 @@ if (is_steem_domain(url)) {
     let permlink = pat[3];
     if (id && permlink) {
       let api =
-        'https://uploadbeta.com/api/steemit/simple-reblog/?cached&id=' +
-        id +
+        'https://api.justyy.workers.dev/api/steemit/simple-reblog/?cached&id=' +
+        encodeURIComponent(id) +
         '&permlink=' +
-        permlink;
+        encodeURIComponent(permlink);
       console.log(api);
       fetch(api)
         .then(status)

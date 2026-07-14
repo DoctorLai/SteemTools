@@ -14,7 +14,11 @@ const {
   readResponseAsJSON,
   validateResponse,
   escapeHtml,
+  safeExternalUrl,
   isNumeric,
+  storageKey,
+  readNamespacedStorage,
+  formatVersion,
 } = require('../js/functions.js');
 
 function setUserAgent(ua) {
@@ -73,6 +77,14 @@ describe('getSteemUrl', () => {
     const html = getSteemUrl('justyy');
     expect(html).toContain("href='https://steemit.com/@justyy'");
     expect(html).toContain('>@justyy</a>');
+    expect(html).toContain("rel='noopener noreferrer'");
+  });
+
+  it('encodes the URL and escapes the visible account id', () => {
+    const html = getSteemUrl("bad' onclick='alert(1)");
+    expect(html).toContain('bad%27%20onclick%3D%27alert(1)');
+    expect(html).toContain('@bad&#039; onclick=&#039;alert(1)</a>');
+    expect(html).not.toContain(" onclick='");
   });
 });
 
@@ -137,6 +149,18 @@ describe('response helpers', () => {
   });
 });
 
+describe('safeExternalUrl', () => {
+  it('allows HTTP and HTTPS URLs', () => {
+    expect(safeExternalUrl('https://example.com/post')).toBe('https://example.com/post');
+    expect(safeExternalUrl('http://example.com/post')).toBe('http://example.com/post');
+  });
+
+  it('rejects executable and malformed URLs', () => {
+    expect(safeExternalUrl('javascript:alert(1)')).toBe('#');
+    expect(safeExternalUrl('not a URL')).toBe('#');
+  });
+});
+
 describe('escapeHtml', () => {
   it('escapes all HTML-sensitive characters', () => {
     expect(escapeHtml(`<a href="x">Tom & Jerry's</a>`)).toBe(
@@ -175,5 +199,65 @@ describe('textPressEnterButtonClick', () => {
 
     handler({ keyCode: 65 });
     expect(button.click).toHaveBeenCalledTimes(1);
+  });
+});
+
+describe('storageKey', () => {
+  it('namespaces keys with the app prefix', () => {
+    expect(storageKey('active_tab')).toBe('steemtools:active_tab');
+  });
+
+  it('prefixes an empty name and keeps distinct names distinct', () => {
+    expect(storageKey('')).toBe('steemtools:');
+    expect(storageKey('a')).not.toBe(storageKey('b'));
+  });
+});
+
+describe('readNamespacedStorage', () => {
+  const createStorage = (entries = {}) => {
+    const values = new Map(Object.entries(entries));
+    return {
+      getItem: (key) => (values.has(key) ? values.get(key) : null),
+      setItem: (key, value) => values.set(key, value),
+      removeItem: (key) => values.delete(key),
+    };
+  };
+
+  it('prefers an existing namespaced value', () => {
+    const storage = createStorage({
+      'steemtools:active_tab': '3',
+      steemtools_active_tab: '7',
+    });
+    expect(readNamespacedStorage(storage, 'active_tab', 'steemtools_active_tab')).toBe('3');
+    expect(storage.getItem('steemtools_active_tab')).toBe('7');
+  });
+
+  it('moves a legacy value to the namespaced key', () => {
+    const storage = createStorage({ steemtools_active_tab: '5' });
+    expect(readNamespacedStorage(storage, 'active_tab', 'steemtools_active_tab')).toBe('5');
+    expect(storage.getItem('steemtools:active_tab')).toBe('5');
+    expect(storage.getItem('steemtools_active_tab')).toBeNull();
+  });
+});
+
+describe('formatVersion', () => {
+  it('formats a date and commit', () => {
+    expect(formatVersion({ date: '2026-07-13', commit: '054ffe1' })).toBe('2026-07-13 (054ffe1)');
+  });
+
+  it('includes the semantic version when provided', () => {
+    expect(formatVersion({ version: '1.1.0', date: '2026-07-14', commit: '054ffe1' })).toBe(
+      'v1.1.0 · 2026-07-14 (054ffe1)'
+    );
+  });
+
+  it('omits a missing or placeholder commit', () => {
+    expect(formatVersion({ version: '1.1.0' })).toBe('v1.1.0');
+    expect(formatVersion({ date: '2026-07-14', commit: 'dev' })).toBe('2026-07-14');
+  });
+
+  it('returns an empty string when nothing is known', () => {
+    expect(formatVersion({})).toBe('');
+    expect(formatVersion()).toBe('');
   });
 });
