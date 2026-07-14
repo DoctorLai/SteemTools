@@ -6,6 +6,7 @@ const path = require('path');
 const root = path.resolve(__dirname, '..');
 const manifest = JSON.parse(fs.readFileSync(path.join(root, 'manifest.json'), 'utf8'));
 const pkg = JSON.parse(fs.readFileSync(path.join(root, 'package.json'), 'utf8'));
+const packageLock = JSON.parse(fs.readFileSync(path.join(root, 'package-lock.json'), 'utf8'));
 
 const exists = (relativePath) => fs.existsSync(path.join(root, relativePath));
 
@@ -25,6 +26,12 @@ describe('manifest.json', () => {
 
   it('keeps the manifest and package versions in sync', () => {
     expect(manifest.version).toBe(pkg.version);
+  });
+
+  it('keeps package-lock metadata in sync with package.json', () => {
+    expect(packageLock.version).toBe(pkg.version);
+    expect(packageLock.packages[''].version).toBe(pkg.version);
+    expect(packageLock.packages[''].engines).toEqual(pkg.engines);
   });
 
   it('references icon files that exist on disk', () => {

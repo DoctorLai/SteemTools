@@ -30,7 +30,9 @@ jobs:
       - name: Generate badge
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: gh api "repos/${{ github.repository }}/languages" | node scripts/lang-badge.js
+        run: |
+          set -o pipefail
+          gh api "repos/${{ github.repository }}/languages" | node scripts/lang-badge.js
 
       - name: Publish to the badges branch
         env:

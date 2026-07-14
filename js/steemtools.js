@@ -390,12 +390,15 @@ const handleAccountWitness = () => {
             for (let i = 0; i < result.length; i++) {
               s += '<tr>';
               s += '<td>' + getSteemUrl(result[i]['name']) + ' <BR/>(';
-              s += '<a rel=nofollow target=_blank href="' + result[i]['url'] + '">Post</a>)</td>';
+              s +=
+                '<a rel="nofollow noopener noreferrer" target=_blank href="' +
+                escapeHtml(safeExternalUrl(result[i]['url'])) +
+                '">Post</a>)</td>';
               let status = "<font color='green'>Yes</font>";
               if (result[i]['signing_key'].includes('1111111111')) {
                 status =
-                  "<font color='red'>No</font><BR/><a target=_blank rel=nofollow href='https://steemconnect.com/sign/account_witness_vote?approve=0&witness=" +
-                  result[i]['name'] +
+                  "<font color='red'>No</font><BR/><a target=_blank rel='nofollow noopener noreferrer' href='https://steemconnect.com/sign/account_witness_vote?approve=0&witness=" +
+                  encodeURIComponent(result[i]['name']).replace(/'/g, '%27') +
                   "'><font color=red><B>Unvote</B></font></a>";
               }
               s +=
@@ -404,7 +407,7 @@ const handleAccountWitness = () => {
                 ' (<a rel="nofollow noopener noreferrer" target=_blank href="https://api.justyy.workers.dev/api/echo/?s=' +
                 encodeURIComponent(result[i]['signing_key']) +
                 '" title="' +
-                result[i]['signing_key'] +
+                escapeHtml(String(result[i]['signing_key'])) +
                 '">Signing Key</a>)</td>';
               s += '<td>' + Math.round(result[i]['votes'] / 1000000000000) + '</td>';
               s += '<td>' + result[i]['votes_count'] + '</td>';
@@ -624,7 +627,10 @@ document.addEventListener(
       let tabs = $('#tabs').tabs();
       try {
         let key = storageKey('active_tab');
-        let saved = parseInt(localStorage.getItem(key), 10);
+        let saved = parseInt(
+          readNamespacedStorage(localStorage, 'active_tab', 'steemtools_active_tab'),
+          10
+        );
         let count = tabs.find('> ul > li').length;
         if (!isNaN(saved) && saved >= 0 && saved < count) {
           tabs.tabs('option', 'active', saved);

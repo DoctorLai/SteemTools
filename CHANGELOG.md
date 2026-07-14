@@ -25,7 +25,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Migrated the Steem Tools API from the legacy per-region hosts to a single
   Cloudflare Worker (`api.justyy.workers.dev`).
-- `localStorage` keys are now namespaced with a `steemtools:` prefix.
+- `localStorage` keys are now namespaced with a `steemtools:` prefix; the v1.0
+  active-tab preference is migrated automatically.
 - Repointed the witness “View Complete Data” link to `steemyy.com`.
 - Bumped the extension version to `1.1.0` (manifest and package kept in sync).
 
@@ -33,6 +34,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - The resteems content script requested the new API without the `/api` path
   prefix and received a 404; the correct path is now used.
+
+### Security
+
+- API-provided account ids and witness metadata are encoded or HTML-escaped before
+  rendering, external witness links are restricted to HTTP(S), and links opened in
+  a new tab use `noopener noreferrer`.
+- Supported Steem domains are matched by parsed hostname, preventing lookalike
+  domains such as `steemit.com.evil.example` from triggering the content script.
 
 ## [1.0.0] - 2026
 
