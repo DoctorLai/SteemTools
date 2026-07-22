@@ -41,7 +41,7 @@
     "globals": "^17.7.0",
     "jest": "^30.4.2",
     "jest-environment-jsdom": "^30.4.1",
-    "prettier": "^3.9.5"
+    "prettier": "^3.9.6"
   },
   "engines": {
     "node": ">=20"
